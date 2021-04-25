@@ -23,7 +23,7 @@ import Modal from '../../components/Modal/Modal';
 export const currentyTime = Intl.DateTimeFormat('ru-Ru', {
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
+
 })
 export const currentDate = Intl.DateTimeFormat('ru-Ru', {
     year: 'numeric',

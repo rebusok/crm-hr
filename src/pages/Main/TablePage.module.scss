@@ -1,5 +1,37 @@
 .divHeader {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
+
+  position: relative;
+  &:after {
+    content: "";
+    background: grey;
+    width: 1px;
+    height: 40px;
+    position: absolute;
+    right: -10px;
+
+  }
+}
+.open {
+  transition: all 0.5s ease-in-out;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+}
+
+.flexLeft{
+  justify-content: flex-start;
+}
+.close {
+
+
+
+  transition: all 0.5s ease-in-out;
+}
+.wrappedFilter{
+  position: relative;
+  transition: all 0.5s ease-in-out;
 }

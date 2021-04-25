@@ -1,5 +1,5 @@
 
-type StatusType = 'подошел' | 'отказ' | 'думает';
+export type StatusType = 'подошел' | 'отказ' | 'думает';
 type TotalType = 'Выход на работу' | 'Стажировка'| 'Отказ' | 'Отказ-руководителя'
 export type TableRowType = {
     [key: string]: any
@@ -27,11 +27,18 @@ export type HeadCellsType = {
     label: string,
     sorting: boolean,
     typeSorting: TypeSort | null,
+    fillterHead:boolean
 
 }
+
 export enum SortEnum {
     STRING = 'string',
     NUMBER = 'number',
     DATE = 'date',
     BOOLEAN = 'boolean'
+}
+export enum StatusEnum {
+    OK = 'подошел',
+    NO = 'отказ',
+    THINK = 'думает'
 }

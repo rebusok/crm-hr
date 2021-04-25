@@ -13,13 +13,13 @@ export const rows: Array<TableRowType> = [
     {id: v4(), total: 'Выход на работу',  position: 'Roxie', name: 'Harvey', meeting: false, date: '2021-04-22T14:28:50.295Z',  status:'подошел', recommendation: '', leaderInterview:false, SS:null, time:'2021-04-22T14:28:50.295Z'},
 ];
 export const headCells: HeadCellsType[] = [
-    {id: 'date', numeric: true, label: 'Дата', sorting: true, typeSorting: SortEnum.DATE},
-    {id: 'time', numeric: true, label: 'Время', sorting: false, typeSorting: SortEnum.DATE},
-    {id: 'position', numeric: false, label: 'Должность', sorting: true, typeSorting: SortEnum.STRING},
-    {id: 'name', numeric: false, label: 'ФИО', sorting: false, typeSorting: SortEnum.STRING},
-    {id: 'meeting', numeric: false, label: 'Встреча', sorting: false, typeSorting: SortEnum.BOOLEAN},
-    {id: 'status', numeric: false, label: 'Итог', sorting: true, typeSorting: SortEnum.STRING},
-    {id: 'recommendation', numeric: false, label: 'Рекомендации', sorting: false, typeSorting: SortEnum.STRING},
-    {id: 'SS', numeric: false, label: 'Связь', sorting: true, typeSorting: SortEnum.DATE},
+    {id: 'date', numeric: true, label: 'Дата', sorting: true, typeSorting: SortEnum.DATE, fillterHead:false},
+    {id: 'time', numeric: true, label: 'Время', sorting: false, typeSorting: SortEnum.DATE, fillterHead:false},
+    {id: 'position', numeric: false, label: 'Должность', sorting: true, typeSorting: SortEnum.STRING, fillterHead:false},
+    {id: 'name', numeric: false, label: 'ФИО', sorting: false, typeSorting: SortEnum.STRING, fillterHead:false},
+    {id: 'meeting', numeric: false, label: 'Встреча', sorting: false, typeSorting: SortEnum.BOOLEAN, fillterHead:false},
+    {id: 'status', numeric: false, label: 'Итог', sorting: false, typeSorting: SortEnum.STRING, fillterHead:true},
+    {id: 'recommendation', numeric: false, label: 'Рекомендации', sorting: false, typeSorting: SortEnum.STRING, fillterHead:false},
+    {id: 'SS', numeric: false, label: 'Связь', sorting: true, typeSorting: SortEnum.DATE, fillterHead:false},
 
 ];

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,14 +8,15 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {Checkbox} from "@material-ui/core";
+import {Button, Checkbox, TextField} from "@material-ui/core";
 import EnhancedTableToolbar from "./EnhancedTableToolbar ";
-import {Order, OrderEnum, SortEnum, TableRowType} from '../../store/TableReducer/TableType';
+import {Order, OrderEnum, SortEnum, StatusType, TableRowType} from '../../store/TableReducer/TableType';
 import {useSelector} from "react-redux";
 import {AppRootStateType} from "../../store/store";
 import EditableSpanText from "../../components/EditableSpanText/EditableSpanText";
 import TableHeader from "../../components/TableHeader/TableHeader";
 import TablePaginationActions from '../../components/TablePaginator/TablePaginator';
+import {currentDate, currentyTime} from "./MainPage";
 
 
 const useStyles2 = makeStyles((theme: Theme) =>
@@ -56,6 +57,10 @@ export default function CustomPaginationActionsTable() {
     const [order, setOrder] = React.useState<Order>(OrderEnum.DESK);
     const [orderBy, setOrderBy] = React.useState<string>('name');
     const [typeSort, setTypeSort] = React.useState<string>('string');
+    const [bolleanFiller, setBooleanFilter] = useState<boolean>(false)
+    const [optionsHeadStatus, setOptionsHeadStatus] = React.useState<StatusType | ''>('');
+    const [searchName, setSearchName] = useState<string>('')
+    const [currentsearchName, setCurrentSearchName] = useState<string>('')
     // selected
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,11 +166,21 @@ export default function CustomPaginationActionsTable() {
     }
 
     const testHandler = () => {
-
-        console.log(selected)
-
-
+        setCurrentSearchName(searchName)
+        setSearchName('')
     }
+    const filteredHandler = (el:TableRowType) => {
+        if(optionsHeadStatus.length === 0) {
+            return true
+        }
+        return el.status === optionsHeadStatus;
+    }
+    const searchHangler = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setSearchName(e.currentTarget.value)
+    }
+    const filteredByName = rows.filter(el => {
+        return el.name.toLowerCase().includes(currentsearchName.toLowerCase())
+    })
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
     return (
         <Paper>
@@ -178,11 +193,16 @@ export default function CustomPaginationActionsTable() {
                         numSelected={selected.length}
                         onRequestSort={testSotr}
                         classes={classes}
+                        order={order}
+                        filtered={bolleanFiller}
+                        setBooleanFilter={setBooleanFilter}
+                        setOptionsHeadStatus={setOptionsHeadStatus}
+                        optionsHeadStatus={optionsHeadStatus}
                     />
                     <TableBody>
                         {(rowsPerPage > 0
-                                ? smartSorting(rows, typeSort, order, orderBy).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                : smartSorting(rows, typeSort, order, orderBy)
+                                ? smartSorting(filteredByName.filter(filteredHandler), typeSort, order, orderBy).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                : smartSorting(filteredByName.filter(filteredHandler), typeSort, order, orderBy)
                         ).map((row, index) => {
                                 const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
@@ -202,25 +222,25 @@ export default function CustomPaginationActionsTable() {
                                                 onClick={(event) => handleClick(event, row.id)}
                                             />
                                         </TableCell>
-                                        <TableCell style={{width: 160}} component="th" scope="row" id={labelId}>
-                                            {row.date}
+                                        <TableCell style={{width: 100}} component="th" scope="row" id={labelId} align="center" >
+                                            { currentDate.format(new Date(row.date))}
                                         </TableCell>
-                                        <TableCell style={{width: 160}} align="right">
-                                            {row.time}
+                                        <TableCell style={{width: 60}} align="center">
+                                            { currentyTime.format(new Date(row.time))}
                                         </TableCell>
-                                        <TableCell style={{width: 160}} align="right">
+                                        <TableCell style={{width: 80}} align="center">
                                             {row.position}
                                         </TableCell>
-                                        <TableCell style={{width: 160}} align="right">
+                                        <TableCell style={{width: 100}} align="center">
                                             {row.name}
                                         </TableCell>
-                                        <TableCell style={{width: 160}} align="right">
+                                        <TableCell style={{width: 100}} align="center">
                                             {row.meeting ? <span>yes</span> :  <span>No</span>}
                                         </TableCell>
-                                        <TableCell style={{width: 160}} align="right">
+                                        <TableCell style={{width: 160}} align="center">
                                         {row.status}
                                     </TableCell>
-                                        <TableCell style={{width: 160}} align="right">
+                                        <TableCell style={{width: 160}} align="left">
                                             <EditableSpanText
                                                 value={row.recommendation}
                                                 blured={true}
@@ -229,7 +249,7 @@ export default function CustomPaginationActionsTable() {
                                             />
 
                                         </TableCell>
-                                        <TableCell style={{width: 160}} align="right">
+                                        <TableCell style={{width: 160}} align="center">
                                             <EditableSpanText
                                                 value={row.SS ? row.SS.slice(0, 10).split('-').join('.') :  ''}
                                                 blured={true}
@@ -260,7 +280,8 @@ export default function CustomPaginationActionsTable() {
                     </TableFooter>
                 </Table>
             </TableContainer>
-
+            <TextField id="standard-basic" label="Standard"  onChange={(e) => searchHangler(e)} value={searchName}/>
+            <Button onClick={testHandler}>CLISK</Button>
         </Paper>
 
     );
