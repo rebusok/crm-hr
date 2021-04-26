@@ -1,6 +1,14 @@
 import {useStyles} from "@material-ui/x-grid-data-generator/dist/cjs/_modules_/grid/components/containers/GridRootStyles";
-import React from "react";
-import {Order, OrderEnum, StatusEnum, StatusType, TypeSort} from "../../store/TableReducer/TableType";
+import React, {useState} from "react";
+import {
+    Order,
+    OrderEnum,
+    StatusEnum,
+    StatusType,
+    TotalEnum,
+    TotalType,
+    TypeSort
+} from "../../store/TableReducer/TableType";
 import {IconButton, TableHead} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
@@ -18,23 +26,30 @@ interface EnhancedTableProps {
     rowCount: number;
     onRequestSort: (typeSorting: string, sortByValue: Order, keyValue: string) => void;
     order: Order,
-    filtered: boolean,
-    setBooleanFilter: (filterdBoolean: boolean) => void
-    setOptionsHeadStatus: (optionsValue:StatusType | '') => void
-    optionsHeadStatus: StatusType | ''
+    setOptionsHeadStatus: (optionsValue: StatusType | '' | TotalType) => void
+    optionsHeadStatus: StatusType | '' | TotalType
 }
 
 
 function TableHeader(props: EnhancedTableProps) {
-    const {onRequestSort, setBooleanFilter, filtered, setOptionsHeadStatus, optionsHeadStatus} = props;
-    const optionsArray = [StatusEnum.OK, StatusEnum.NO, StatusEnum.THINK]
+    const {onRequestSort, setOptionsHeadStatus, optionsHeadStatus} = props;
+    const optionsArrayStatus = [StatusEnum.OK, StatusEnum.NO, StatusEnum.THINK]
+    const optionsArrayTotal = [TotalEnum.OFER, TotalEnum.CANSEL, TotalEnum.CANSEL_LID, TotalEnum.TRANING]
+    const [bolleanFillerStatus, setBooleanFilterStatus] = useState<boolean>(false)
+    const [bolleanFillerTotal, setBooleanFilterTotal] = useState<boolean>(false)
+
     function handlerSorting(typeSorting: TypeSort | null, sortByValue: Order, keyValue: string) {
         if (typeSorting === null) return
 
         onRequestSort(typeSorting, sortByValue, keyValue)
     }
-    const fileredBooleanHandler = () => {
-        setBooleanFilter(!filtered)
+
+    const fileredBooleanHandlerStatus = () => {
+        setBooleanFilterStatus(!bolleanFillerStatus)
+        setOptionsHeadStatus('')
+    }
+    const fileredBooleanHandlerTotal = () => {
+        setBooleanFilterTotal(!bolleanFillerTotal)
         setOptionsHeadStatus('')
     }
     return (
@@ -46,22 +61,42 @@ function TableHeader(props: EnhancedTableProps) {
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? 'left' :filtered ? 'left' : 'center'}
+                        align={headCell.numeric ? 'left' : bolleanFillerStatus ? 'left' : 'center'}
 
                     >
-                        <div className={`${style.divHeader}  ${headCell.fillterHead && filtered  ? style.flexLeft : ''}`}>
+                        {/* eslint-disable-next-line no-mixed-operators */}
+                        <div
+
+
+                            className={`${style.divHeader}  ${headCell.fillterHead && bolleanFillerStatus ? style.flexLeft : ''} ${headCell.fillterHead && bolleanFillerTotal ? style.flexLeft : ''} `}>
                             {headCell.label}
                             <div className={`${style.wrappedFilter}`}>
                                 {headCell.fillterHead ?
-                                    <>
-                                    <div className={filtered? style.open : style.close}>
-                                        <IconButton aria-label="delete" onClick={fileredBooleanHandler} >
-                                            <FilterListIcon fontSize={'small'}/>
-                                        </IconButton>
+                                    headCell.id === 'status' ?
+                                        <>
+                                            <div className={bolleanFillerStatus ? style.open : style.close}>
+                                                <IconButton aria-label="delete" onClick={fileredBooleanHandlerStatus}>
+                                                    <FilterListIcon fontSize={'small'}/>
+                                                </IconButton>
 
-                                    </div>
-                                        <SelectedHeader filtered={filtered} optionsArray={optionsArray} optionsHeadStatus={optionsHeadStatus} setOptionsHeadStatus={setOptionsHeadStatus}/>
-                                    </>
+                                            </div>
+                                            <SelectedHeader filtered={bolleanFillerStatus}
+                                                            optionsArray={optionsArrayStatus}
+                                                            optionsHeadStatus={optionsHeadStatus}
+                                                            setOptionsHeadStatus={setOptionsHeadStatus}/>
+                                        </>
+                                        : <>
+                                            <div className={bolleanFillerTotal ? style.open : style.close}>
+                                                <IconButton aria-label="delete" onClick={fileredBooleanHandlerTotal}>
+                                                    <FilterListIcon fontSize={'small'}/>
+                                                </IconButton>
+
+                                            </div>
+                                            <SelectedHeader filtered={bolleanFillerTotal} optionsArray={optionsArrayTotal}
+                                                            optionsHeadStatus={optionsHeadStatus}
+                                                            setOptionsHeadStatus={setOptionsHeadStatus}/>
+                                        </>
+
                                     : null
                                 }
 

@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import style from './SelectedHeader.module.scss'
-import {StatusType} from "../../store/TableReducer/TableType";
+import {StatusType, TotalType} from "../../store/TableReducer/TableType";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
 interface SelectedHeaderProps {
     filtered: boolean,
     optionsArray: string[]
-    setOptionsHeadStatus: (optionsValue:StatusType) => void
-    optionsHeadStatus: StatusType | ''
+    setOptionsHeadStatus: (optionsValue:StatusType | TotalType) => void
+    optionsHeadStatus: StatusType | '' | TotalType
 }
 
 const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, setOptionsHeadStatus, optionsHeadStatus}) =>{
@@ -48,7 +48,7 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, setOpt
         <div className={filtered ? style.open : style.close}>
 
             <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open-select-label">Age</InputLabel>
+                <InputLabel id="demo-controlled-open-select-label">Фильтр</InputLabel>
                 <Select
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"

@@ -1,13 +1,13 @@
-import {createStyles, IconButton, lighten, Theme, Tooltip} from '@material-ui/core';
-import { Toolbar } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core';
+import {createStyles, IconButton, lighten, makeStyles, Theme, Toolbar, Tooltip, Typography} from '@material-ui/core';
 import React, {FC} from 'react';
 import clsx from 'clsx';
-import { Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import {useSelector} from "react-redux";
-import {AppRootStateType} from "../../store/store";
+import {useDispatch} from "react-redux";
+import {NavLink} from 'react-router-dom';
+import {RoutingType} from "../../routes/Routes";
+import {editTable} from "../../store/TableReducer/TableReducer";
+
 export const useToolbarStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -37,10 +37,10 @@ interface EnhancedTableToolbarProps {
 const EnhancedTableToolbar:FC<EnhancedTableToolbarProps> = (props) => {
     const classes = useToolbarStyles();
     const { numSelected } = props;
-    const rows = useSelector((state: AppRootStateType) => state.tableRows)
-    const editHandler = () => {
-        console.log(rows.filter(a => props.selected.includes(a.id)))
 
+    const dispatch = useDispatch()
+    const editHandler = () => {
+        dispatch(editTable(props.selected))
     }
     return (
         <>
@@ -60,9 +60,9 @@ const EnhancedTableToolbar:FC<EnhancedTableToolbarProps> = (props) => {
                 )}
                 {numSelected > 0 ? (
                     <Tooltip title="Delete">
-                        <IconButton aria-label="delete" onClick={editHandler}>
+                        <NavLink to={RoutingType.EDIT} onClick={editHandler}>
                             <EditIcon />
-                        </IconButton>
+                        </NavLink>
                     </Tooltip>
                 ) : (
                     <Tooltip title="Filter list">

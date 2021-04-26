@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {Route, Switch } from 'react-router-dom';
-import MainPage from "../pages/Main/MainPage";
 import EditPage from "../pages/EdditPage/EdditPage";
+import TablePage from "../pages/Main/TablePage";
 
 
 
@@ -16,8 +16,8 @@ const Routes:FC = () => {
     return (
         <>
             <Switch>
-                <Route exact path={RoutingType.MAIN} render={() => <MainPage/>}/>
-                <Route exact path={`${RoutingType.EDIT}/:idRow`} render={() => <EditPage/>}/>
+                <Route exact path={RoutingType.MAIN} render={() => <TablePage/>}/>
+                <Route exact path={`${RoutingType.EDIT}`} render={() => <EditPage/>}/>
             </Switch>
         </>
     );

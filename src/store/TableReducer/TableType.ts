@@ -1,6 +1,6 @@
 
 export type StatusType = 'подошел' | 'отказ' | 'думает';
-type TotalType = 'Выход на работу' | 'Стажировка'| 'Отказ' | 'Отказ-руководителя'
+export type TotalType = 'Выход на работу' | 'Стажировка'| 'Отказ' | 'Отказ-руководителя'
 export type TableRowType = {
     [key: string]: any
     id: string,
@@ -13,7 +13,6 @@ export type TableRowType = {
     leaderInterview: boolean ,
     SS: string | null,
     total: TotalType,
-    time:string
 }
 export type Order = 'asc' | 'desc';
 export type TypeSort = 'string' | 'number' | 'date' | 'boolean'
@@ -41,4 +40,11 @@ export enum StatusEnum {
     OK = 'подошел',
     NO = 'отказ',
     THINK = 'думает'
+}
+
+export enum TotalEnum {
+    OFER= 'Выход на работу',
+    CANSEL = 'Отказ',
+    CANSEL_LID = 'Отказ-руководителя',
+    TRANING = 'Стажировка'
 }

@@ -10,13 +10,14 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {Button, Checkbox, TextField} from "@material-ui/core";
 import EnhancedTableToolbar from "./EnhancedTableToolbar ";
-import {Order, OrderEnum, SortEnum, StatusType, TableRowType} from '../../store/TableReducer/TableType';
+import {Order, OrderEnum, SortEnum, StatusType, TableRowType, TotalType} from '../../store/TableReducer/TableType';
 import {useSelector} from "react-redux";
 import {AppRootStateType} from "../../store/store";
 import EditableSpanText from "../../components/EditableSpanText/EditableSpanText";
 import TableHeader from "../../components/TableHeader/TableHeader";
 import TablePaginationActions from '../../components/TablePaginator/TablePaginator';
-import {currentDate, currentyTime} from "./MainPage";
+import {currentDate, currentyTime} from "../../helper/helper";
+// import {currentDate, currentyTime} from "./MainPage";
 
 
 const useStyles2 = makeStyles((theme: Theme) =>
@@ -48,24 +49,24 @@ const useStyles2 = makeStyles((theme: Theme) =>
 
 
 
-export default function CustomPaginationActionsTable() {
+const  TablePage = () => {
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [selected, setSelected] = React.useState<string[]>([]);
-    const rows = useSelector((state: AppRootStateType) => state.tableRows)
+    const rows = useSelector((state: AppRootStateType) => state.tableRows.rows)
     const [order, setOrder] = React.useState<Order>(OrderEnum.DESK);
     const [orderBy, setOrderBy] = React.useState<string>('name');
     const [typeSort, setTypeSort] = React.useState<string>('string');
-    const [bolleanFiller, setBooleanFilter] = useState<boolean>(false)
-    const [optionsHeadStatus, setOptionsHeadStatus] = React.useState<StatusType | ''>('');
+
+    const [optionsHeadStatus, setOptionsHeadStatus] = React.useState<StatusType | TotalType| ''>('');
     const [searchName, setSearchName] = useState<string>('')
     const [currentsearchName, setCurrentSearchName] = useState<string>('')
     // selected
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.name);
+            const newSelecteds = rows.map((n:TableRowType) => n.name);
             setSelected(newSelecteds);
             return;
         }
@@ -173,7 +174,7 @@ export default function CustomPaginationActionsTable() {
         if(optionsHeadStatus.length === 0) {
             return true
         }
-        return el.status === optionsHeadStatus;
+        return el.status === optionsHeadStatus || el.total === optionsHeadStatus;
     }
     const searchHangler = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setSearchName(e.currentTarget.value)
@@ -194,8 +195,6 @@ export default function CustomPaginationActionsTable() {
                         onRequestSort={testSotr}
                         classes={classes}
                         order={order}
-                        filtered={bolleanFiller}
-                        setBooleanFilter={setBooleanFilter}
                         setOptionsHeadStatus={setOptionsHeadStatus}
                         optionsHeadStatus={optionsHeadStatus}
                     />
@@ -208,7 +207,7 @@ export default function CustomPaginationActionsTable() {
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
 
-                                    <TableRow key={row.name}
+                                    <TableRow key={row.id}
                                               tabIndex={-1}
                                               role="checkbox"
                                               hover
@@ -225,8 +224,8 @@ export default function CustomPaginationActionsTable() {
                                         <TableCell style={{width: 100}} component="th" scope="row" id={labelId} align="center" >
                                             { currentDate.format(new Date(row.date))}
                                         </TableCell>
-                                        <TableCell style={{width: 60}} align="center">
-                                            { currentyTime.format(new Date(row.time))}
+                                        <TableCell style={{width: 60}} align="center" >
+                                            { currentyTime.format(new Date(row.date))}
                                         </TableCell>
                                         <TableCell style={{width: 80}} align="center">
                                             {row.position}
@@ -249,6 +248,12 @@ export default function CustomPaginationActionsTable() {
                                             />
 
                                         </TableCell>
+                                        <TableCell style={{width: 100}} align="center">
+                                            {row.leaderInterview ? <span>yes</span> :  <span>No</span>}
+                                        </TableCell>
+                                        <TableCell style={{width: 160}} align="center">
+                                            {row.total}
+                                        </TableCell>
                                         <TableCell style={{width: 160}} align="center">
                                             <EditableSpanText
                                                 value={row.SS ? row.SS.slice(0, 10).split('-').join('.') :  ''}
@@ -258,6 +263,7 @@ export default function CustomPaginationActionsTable() {
                                             />
 
                                         </TableCell>
+
                                     </TableRow>
                                 )
                             }
@@ -286,3 +292,4 @@ export default function CustomPaginationActionsTable() {
 
     );
 }
+export default TablePage

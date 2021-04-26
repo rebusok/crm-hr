@@ -116,3 +116,31 @@ const GridCellExpand = React.memo(function GridCellExpand(
         />
     );
 }
+
+export const currentyTime = Intl.DateTimeFormat('ru-Ru', {
+    hour: '2-digit',
+    minute: '2-digit',
+
+})
+export const currentDate = Intl.DateTimeFormat('ru-Ru', {
+    year: 'numeric',
+    day: '2-digit',
+    month: '2-digit',
+
+})
+
+export const setTime = (data:string, time: string, row: any) => {
+    const date = new Date(row.date)
+    const arrDate = data?.split('-').map(el => (+el))
+    const arrayTime = time?.split(':').map(el => +el)
+    date.setFullYear(arrDate[0], arrDate[1] - 1, arrDate[2])
+    date.setHours(arrayTime[0], arrayTime[1])
+    return date.toISOString()
+
+}
+export const setYear = (data:string) => {
+
+     if(data.trim() === '') return null
+    const arrDate = data?.split('-').map(el => (+el))
+    return new Date(arrDate[0], arrDate[1] - 1, arrDate[2]).toISOString()
+}
