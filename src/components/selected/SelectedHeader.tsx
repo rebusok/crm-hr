@@ -33,7 +33,7 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, setOpt
     const [open, setOpen] = React.useState(false);
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setOptionsHeadStatus(event.target.value as StatusType);
+        setOptionsHeadStatus(event.target.value as StatusType |  TotalType);
     };
 
     const handleClose = () => {
@@ -48,18 +48,19 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, setOpt
         <div className={filtered ? style.open : style.close}>
 
             <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open-select-label">Фильтр</InputLabel>
+                <InputLabel id={optionsArray[0] + 'label'}>Фильтр</InputLabel>
                 <Select
-                    labelId="demo-controlled-open-select-label"
-                    id="demo-controlled-open-select"
+                    labelId={optionsArray[0] + 'label'}
+                    id={optionsArray[0] }
                     open={open}
                     onClose={handleClose}
                     onOpen={handleOpen}
+                    defaultValue={''}
                     value={optionsHeadStatus}
                     onChange={handleChange}
                 >
                     {
-                        optionsArray.map((el, index) => {
+                        optionsArray && optionsArray.map((el, index) => {
                             return (
                                 <MenuItem key={el + index} value={el}>{el}</MenuItem>
                             )

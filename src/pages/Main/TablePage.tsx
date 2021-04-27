@@ -11,12 +11,13 @@ import Paper from '@material-ui/core/Paper';
 import {Button, Checkbox, TextField} from "@material-ui/core";
 import EnhancedTableToolbar from "./EnhancedTableToolbar ";
 import {Order, OrderEnum, SortEnum, StatusType, TableRowType, TotalType} from '../../store/TableReducer/TableType';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../../store/store";
 import EditableSpanText from "../../components/EditableSpanText/EditableSpanText";
 import TableHeader from "../../components/TableHeader/TableHeader";
 import TablePaginationActions from '../../components/TablePaginator/TablePaginator';
 import {currentDate, currentyTime} from "../../helper/helper";
+import {editValueRow} from "../../store/TableReducer/TableReducer";
 // import {currentDate, currentyTime} from "./MainPage";
 
 
@@ -62,6 +63,8 @@ const  TablePage = () => {
     const [optionsHeadStatus, setOptionsHeadStatus] = React.useState<StatusType | TotalType| ''>('');
     const [searchName, setSearchName] = useState<string>('')
     const [currentsearchName, setCurrentSearchName] = useState<string>('')
+
+    const dispatch = useDispatch();
     // selected
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,6 +185,11 @@ const  TablePage = () => {
     const filteredByName = rows.filter(el => {
         return el.name.toLowerCase().includes(currentsearchName.toLowerCase())
     })
+    const changeInputRecHandler = (newValue:string, id:string) => {
+        console.log(newValue)
+        console.log(id)
+        dispatch(editValueRow(newValue, id))
+    }
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
     return (
         <Paper>
@@ -242,8 +250,9 @@ const  TablePage = () => {
                                         <TableCell style={{width: 160}} align="left">
                                             <EditableSpanText
                                                 value={row.recommendation}
+                                                idRow={row.id}
                                                 blured={true}
-                                                onChanges={testHandler}
+                                                onChanges={changeInputRecHandler}
                                                 typeSpan={SortEnum.STRING}
                                             />
 
@@ -259,6 +268,7 @@ const  TablePage = () => {
                                                 value={row.SS ? row.SS.slice(0, 10).split('-').join('.') :  ''}
                                                 blured={true}
                                                 onChanges={testHandler}
+                                                idRow={row.id}
                                                 typeSpan={SortEnum.DATE}
                                             />
 

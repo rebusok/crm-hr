@@ -129,8 +129,8 @@ export const currentDate = Intl.DateTimeFormat('ru-Ru', {
 
 })
 
-export const setTime = (data:string, time: string, row: any) => {
-    const date = new Date(row.date)
+export const setTime = (data:string, time: string, row?: any) => {
+    const date = new Date(row? row.date : null)
     const arrDate = data?.split('-').map(el => (+el))
     const arrayTime = time?.split(':').map(el => +el)
     date.setFullYear(arrDate[0], arrDate[1] - 1, arrDate[2])

@@ -5,9 +5,10 @@ import {SortEnum, TypeSort} from "../../store/TableReducer/TableType";
 
 type EditableSpanType = {
     value:string
-    onChanges: (newValue:string) => void
+    onChanges: (newValue:string, id:string) => void
     blured: boolean
     typeSpan: TypeSort
+    idRow:string
 }
 
 const EditableSpanText = React.memo((props:EditableSpanType) => {
@@ -23,7 +24,7 @@ const EditableSpanText = React.memo((props:EditableSpanType) => {
     }
     const activateViewMetod = () => {
         setEditMode(false);
-        props.onChanges(title);
+        props.onChanges(title, props.idRow);
     }
 
     return (

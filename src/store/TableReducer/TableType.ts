@@ -42,7 +42,7 @@ export enum StatusEnum {
     THINK = 'думает'
 }
 
-export enum TotalEnum {
+export enum TotalEnum{
     OFER= 'Выход на работу',
     CANSEL = 'Отказ',
     CANSEL_LID = 'Отказ-руководителя',

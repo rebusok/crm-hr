@@ -7,6 +7,9 @@ import {useDispatch} from "react-redux";
 import {NavLink} from 'react-router-dom';
 import {RoutingType} from "../../routes/Routes";
 import {editTable} from "../../store/TableReducer/TableReducer";
+import AddIcon from '@material-ui/icons/Add';
+import style from './EnhancedTableToolbar.module.css'
+
 
 export const useToolbarStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,14 +32,16 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
+
 interface EnhancedTableToolbarProps {
     numSelected: number;
     setSelected: Function
     selected: string[]
 }
-const EnhancedTableToolbar:FC<EnhancedTableToolbarProps> = (props) => {
+
+const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const {numSelected} = props;
 
     const dispatch = useDispatch()
     const editHandler = () => {
@@ -58,16 +63,23 @@ const EnhancedTableToolbar:FC<EnhancedTableToolbarProps> = (props) => {
                         Таблица Машки
                     </Typography>
                 )}
+                <Tooltip title="add">
+                    <IconButton aria-label="filter list">
+                        <NavLink to={RoutingType.ADD} className={style.linkAdd}>
+                            <AddIcon/>
+                        </NavLink>
+                    </IconButton>
+                </Tooltip>
                 {numSelected > 0 ? (
-                    <Tooltip title="Delete">
+                    <Tooltip title="edit">
                         <NavLink to={RoutingType.EDIT} onClick={editHandler}>
-                            <EditIcon />
+                            <EditIcon/>
                         </NavLink>
                     </Tooltip>
                 ) : (
                     <Tooltip title="Filter list">
                         <IconButton aria-label="filter list">
-                            <FilterListIcon />
+                            <FilterListIcon/>
                         </IconButton>
                     </Tooltip>
                 )}
