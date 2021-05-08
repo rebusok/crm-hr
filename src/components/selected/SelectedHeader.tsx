@@ -1,11 +1,15 @@
 import React, {FC} from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import style from './SelectedHeader.module.scss'
-import {StatusType, TotalType} from "../../store/TableReducer/TableType";
+import {StatusEnum, StatusType, TotalEnum, TotalType} from "../../store/TableReducer/TableType";
+import {useDispatch, useSelector} from "react-redux";
+import {addSearchStatus, addSearchTotal} from "../../store/TableReducer/TableReducer";
+import {Button} from "@material-ui/core";
+import {AppRootStateType} from "../../store/store";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,18 +26,24 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SelectedHeaderProps {
     filtered: boolean,
-    optionsArray: string[]
-    setOptionsHeadStatus: (optionsValue:StatusType | TotalType) => void
-    optionsHeadStatus: StatusType | '' | TotalType
+    optionsArray: StatusEnum[] | TotalEnum[];
+    id:string
+    setCloseFilteredIcon: (el: boolean) => void
 }
 
-const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, setOptionsHeadStatus, optionsHeadStatus}) =>{
+const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, id, setCloseFilteredIcon}) =>{
     const classes = useStyles();
 
     const [open, setOpen] = React.useState(false);
-
+    const [value, setValue] = React.useState<string >('');
+    const {disabledBtn} = useSelector((state: AppRootStateType) => state.app)
+    const dispath= useDispatch();
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setOptionsHeadStatus(event.target.value as StatusType |  TotalType);
+
+        if(id === 'status') dispath(addSearchStatus(event.target.value as StatusType |  TotalType))
+        else dispath(addSearchTotal(event.target.value as StatusType |  TotalType))
+        setValue(event.target.value as StatusType |  TotalType | '')
+        setCloseFilteredIcon(false);
     };
 
     const handleClose = () => {
@@ -43,7 +53,12 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, setOpt
     const handleOpen = () => {
         setOpen(true);
     };
-
+    const resetFilter =  () => {
+        if(id === 'status') dispath(addSearchStatus(''))
+        else dispath(addSearchTotal(''))
+        setCloseFilteredIcon(false);
+        setValue('')
+    }
     return (
         <div className={filtered ? style.open : style.close}>
 
@@ -56,11 +71,11 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, setOpt
                     onClose={handleClose}
                     onOpen={handleOpen}
                     defaultValue={''}
-                    value={optionsHeadStatus}
+                    value={value}
                     onChange={handleChange}
                 >
                     {
-                        optionsArray && optionsArray.map((el, index) => {
+                        optionsArray && optionsArray.map((el:StatusType |  TotalType, index:number) => {
                             return (
                                 <MenuItem key={el + index} value={el}>{el}</MenuItem>
                             )
@@ -68,6 +83,7 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, setOpt
                     }
                 </Select>
             </FormControl>
+            <Button color="secondary" onClick={resetFilter}>Reset</Button>
         </div>
     );
 }

@@ -34,7 +34,7 @@ const EditableSpanText = React.memo((props:EditableSpanType) => {
             : props.typeSpan === SortEnum.DATE
                 ?   <TextField
                     id="date"
-                    label="Birthday"
+                    label="Обратная Связь"
                     type="date"
                     defaultValue={props.value.split('.').join('-')}
                     onChange={changeTitle} autoFocus onBlur={activateViewMetod}
@@ -44,7 +44,7 @@ const EditableSpanText = React.memo((props:EditableSpanType) => {
                 />
                 : <TextField value={title} onChange={changeTitle} autoFocus onBlur={activateViewMetod}/>
             : props.blured
-            ? <span onDoubleClick={activateEditMode} className={style.editSpan}>{props.value}</span>
+            ? <div onDoubleClick={activateEditMode} className={style.editSpan}>{props.value}</div>
             : null
     )
 })

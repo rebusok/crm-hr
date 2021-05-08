@@ -3,13 +3,15 @@ import {Route, Switch } from 'react-router-dom';
 import EditPage from "../pages/EdditPage/EdditPage";
 import TablePage from "../pages/Main/TablePage";
 import AddNewPage from "../pages/AddNewPage/AddNewPage";
+import Auth from "../pages/Auth/Auth";
 
 
 
 export enum RoutingType{
     MAIN='/',
     EDIT='/edit',
-    ADD='/add'
+    ADD='/add',
+    LOGIN='/login'
 }
 
 
@@ -21,6 +23,7 @@ const Routes:FC = () => {
                 <Route exact path={RoutingType.MAIN} render={() => <TablePage/>}/>
                 <Route exact path={`${RoutingType.EDIT}`} render={() => <EditPage/>}/>
                 <Route exact path={`${RoutingType.ADD}`} render={() => <AddNewPage/>}/>
+                <Route exact path={`${RoutingType.LOGIN}`} render={() => <Auth/>}/>
             </Switch>
         </>
     );

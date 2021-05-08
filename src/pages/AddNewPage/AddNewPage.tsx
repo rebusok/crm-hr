@@ -21,6 +21,7 @@ const AddNewPage = () => {
             leaderInterview: false,
             total: TotalEnum.TRANING as TotalType,
             SS: '',
+
         },
         onSubmit: (values) => {
             const currentTime = setTime(values.date, values.time)
@@ -35,10 +36,11 @@ const AddNewPage = () => {
                 position: values.position,
                 recommendation: values.recommendation,
                 leaderInterview: values.leaderInterview,
+
                 SS: currentSS === null ? null : currentSS
             }
-            console.log(newObject)
-            dispatch(AddNewTable(newObject))
+
+            // dispatch(AddNewTable(newObject))
 
             formik.resetForm();
         },

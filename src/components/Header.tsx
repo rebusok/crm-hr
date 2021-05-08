@@ -34,7 +34,9 @@ const Header = () => {
                     <Typography variant="h6" className={classes.title}>
                         <NavLink to={RoutingType.MAIN}>Меню</NavLink>
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    <Typography variant="h6" className={classes.title}>
+                        <NavLink to={RoutingType.LOGIN}>Login</NavLink>
+                    </Typography>
                 </Toolbar>
             </AppBar>
         </>

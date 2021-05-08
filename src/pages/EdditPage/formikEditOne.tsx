@@ -49,7 +49,7 @@ const FormikEditOne: FC<FormikEditOnePropsType> = ({row}) => {
                         SS: currentSS === null ? null : currentSS
                     }
                 }
-                dispatch(editTableSucses(newObject.row))
+                // dispatch(editTableSucses(newObject.row))
                 dispatch(clearEdditTabler(newObject.row.id))
                 console.log(newObject)
             }

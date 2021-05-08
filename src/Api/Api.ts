@@ -2,17 +2,39 @@ import axios from "axios";
 
 const configOMB = {
     // localBack
-    // baseURL: "http://localhost:3010/",
+    // baseURL: "https://crm-back-hr.herokuapp.com/",
     // heroku
-    baseURL: 'http://localhost:3010/',
-
+    baseURL: 'http://localhost:7542/',
+    withCredentials: true,
 
 };
 const axiosInstance = axios.create(configOMB);
 
 export const ApiAuth = {
     login(email: string, password: string, rememberMe: boolean) {
-        return axiosInstance.post('auth/', {email,password, rememberMe})
+        return axiosInstance.post('auth/login', {email,password, rememberMe})
+    },
+    registration(email:string, password: string) {
+        return axiosInstance.post('auth/registration', {email, password})
+    },
+    authMe() {
+        return axiosInstance.post('auth/me')
+    },
+    logOut() {
+        return axiosInstance.delete('/auth/me')
+    },
+
+}
+
+export const ApiCandidatePack = {
+    addNewCandidate(candidatesPack:any) {
+        return axiosInstance.post('candidates/pack', {candidatesPack:candidatesPack})
+    },
+    getCandidatesPack (user_id:string, packName?: string, searchStatus?: string, searchTotal?:string, sortPacks?:string) {
+        return axiosInstance.get('candidates/pack', {params:{user_id, packName, searchStatus, searchTotal, sortPacks}})
+    },
+    updateCandidatesPack(candidatePack:any) {
+        return axiosInstance.put('candidates/pack', {candidatePack})
     }
 }
 
