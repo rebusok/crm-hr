@@ -66,23 +66,30 @@ const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = (props) => {
                     </Typography>
                 )}
                 <Tooltip title="add">
-                    <IconButton aria-label="filter list" disabled={disabledBtn}>
-                        <NavLink to={RoutingType.ADD} className={style.linkAdd}>
-                            <AddIcon/>
-                        </NavLink>
-                    </IconButton>
+                    <span>
+                        <IconButton aria-label="filter list" disabled={disabledBtn}>
+                                 <NavLink to={RoutingType.ADD} className={style.linkAdd}>
+                                     <AddIcon/>
+                                </NavLink> 
+                            </IconButton>
+                    </span>
+
                 </Tooltip>
                 {numSelected > 0 ? (
                     <Tooltip title="edit">
-                        <NavLink to={RoutingType.EDIT} onClick={editHandler} >
+                        <span>
+                            <NavLink to={RoutingType.EDIT} onClick={editHandler}>
                             <EditIcon/>
                         </NavLink>
+                        </span>
                     </Tooltip>
                 ) : (
                     <Tooltip title="Filter list">
-                        <IconButton aria-label="filter list" disabled={disabledBtn}>
+                        <span>
+                            <IconButton aria-label="filter list" disabled={disabledBtn}>
                             <FilterListIcon/>
                         </IconButton>
+                        </span>
                     </Tooltip>
                 )}
             </Toolbar>
