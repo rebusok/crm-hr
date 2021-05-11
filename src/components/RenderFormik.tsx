@@ -1,23 +1,15 @@
 import React from 'react';
-import {Button, Checkbox, createStyles, FormControlLabel, makeStyles, TextField, Theme} from "@material-ui/core";
+import {Button, Checkbox, FormControlLabel, TextField} from "@material-ui/core";
 import style from "../pages/EdditPage/FormikEditOne.module.scss";
 import MenuItem from "@material-ui/core/MenuItem";
 import {StatusEnum, StatusType, TotalEnum, TotalType} from "../store/TableReducer/TableType";
 import {FormikProps} from "formik";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
 
-        textField: {
-            marginLeft: theme.spacing(1),
-            marginRight: theme.spacing(1),
-            width: 200,
-        },
-    }),
-);
-interface RenderFormik{
-    title:string
+interface RenderFormikProps {
+    title: string
 }
+
 interface FormValues {
     date: string
     time: string
@@ -31,96 +23,118 @@ interface FormValues {
     SS: string
 }
 
-const RenderFormik = (props: RenderFormik & FormikProps<FormValues>) => {
-    const classes = useStyles();
+const RenderFormik = (props: RenderFormikProps & FormikProps<FormValues>) => {
     const optionsArrayStatus = [StatusEnum.OK, StatusEnum.NO, StatusEnum.THINK]
     const optionsArrayTotal = [TotalEnum.OFER, TotalEnum.CANSEL, TotalEnum.CANSEL_LID, TotalEnum.TRANING]
     return (
-        <div >
+        <div>
             <form onSubmit={props.handleSubmit} className={style.container}>
-                <TextField
-                    id="date"
-                    label="Дата"
-                    type="date"
-                    className={classes.textField}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    {...props.getFieldProps('date')}
-                />
-                <TextField
-                    id="time"
-                    label="Время"
-                    type="time"
-                    className={classes.textField}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    inputProps={{
-                        step: 300, // 5 min
-                    }}
-                    {...props.getFieldProps('time')}
-                />
-                <TextField required id="standard-required" label="Должность" {...props.getFieldProps('position')}/>
-                <TextField required id="standard-required" label="ФИО" {...props.getFieldProps('name')}/>
-                <div>
-                    <FormControlLabel
-                        control={<Checkbox  checked={props.values.meeting} {...props.getFieldProps('meeting')} /> }
-                        label="Встреча"
-                    />
-                </div>
-                <TextField
-                    select
-                    label="Итог"
-                    variant="standard"
-                    margin="normal"
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    {...props.getFieldProps('status')}
-                >
-                    {optionsArrayStatus.map((option) => (
-                        <MenuItem key={option} value={option}>
-                            {option}
-                        </MenuItem>
-                    ))}
+                <div className={style.mainWrapper}>
+                    <div>
+                        <div className={style.itemWrapper}>
+                            <TextField
+                                id="date"
+                                label="Дата"
+                                type="date"
 
-                </TextField>
-                <TextField required id="standard-required" label='Рекомендации' {...props.getFieldProps('recommendation')}/>
-                <div>
-                    <FormControlLabel
-                        control={<Checkbox  checked={props.values.leaderInterview} {...props.getFieldProps('leaderInterview')} /> }
-                        label="Интервью с руководителем"
-                    />
-                </div>
-                <TextField
-                    select
-                    label="Итог"
-                    variant="standard"
-                    margin="normal"
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    {...props.getFieldProps('total')}
-                >
-                    {optionsArrayTotal.map((option) => (
-                        <MenuItem key={option} value={option}>
-                            {option}
-                        </MenuItem>
-                    ))}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                {...props.getFieldProps('date')}
+                            />
+                        </div>
+                        <div className={style.itemWrapper}>
+                            <TextField
+                                id="time"
+                                label="Время"
+                                type="time"
 
-                </TextField>
-                <TextField
-                    id="date"
-                    label="SS"
-                    type="date"
-                    className={classes.textField}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    {...props.getFieldProps('SS')}
-                />
-                <Button type={'submit'}>{props.title}</Button>
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                inputProps={{
+                                    step: 300, // 5 min
+                                }}
+                                {...props.getFieldProps('time')}
+                            />
+                        </div>
+                        <div className={style.itemWrapper}>
+                            <TextField required label="Должность" {...props.getFieldProps('position')}/>
+                        </div>
+                        <div className={style.itemWrapper}>
+                            <TextField required label="ФИО" {...props.getFieldProps('name')}/>
+                        </div>
+                        <div className={style.itemWrapper}>
+                            <FormControlLabel
+                                control={<Checkbox checked={props.values.meeting} {...props.getFieldProps('meeting')} />}
+                                label="Встреча"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <div className={style.itemWrapper}>
+                            <TextField
+                                select
+                                label="Итог"
+                                variant="standard"
+                                margin="normal"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                {...props.getFieldProps('status')}
+                            >
+                                {optionsArrayStatus.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </div>
+                        <div className={style.itemWrapper}>
+                            <TextField label='Рекомендации' {...props.getFieldProps('recommendation')}/>
+                        </div>
+                        <div className={style.itemWrapper}>
+                            <FormControlLabel
+                                control={<Checkbox
+                                    checked={props.values.leaderInterview} {...props.getFieldProps('leaderInterview')} />}
+                                label="Интервью с руководителем"
+                            />
+                        </div>
+                        <div className={style.itemWrapper}>
+                            <TextField
+                                select
+                                label="Итог"
+                                variant="standard"
+                                margin="normal"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                {...props.getFieldProps('total')}
+                            >
+                                {optionsArrayTotal.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </div>
+                        <div className={style.itemWrapper}>
+                            <TextField
+                                label="SS"
+                                type="date"
+
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                {...props.getFieldProps('SS')}
+                            />
+                        </div>
+                    </div>
+
+                </div>
+                <div className={style.wrapperBtn}>
+                    <Button type={'submit'}>{props.title}</Button>
+                </div>
             </form>
         </div>
     );

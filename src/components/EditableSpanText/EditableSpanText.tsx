@@ -15,7 +15,7 @@ const EditableSpanText = React.memo((props:EditableSpanType) => {
     const [editMode, setEditMode] = useState<boolean>(false);
     const [title, setTitle] = useState<string>(props.value)
     const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-
+        console.log(e.currentTarget.value)
         setTitle(e.currentTarget.value);
     }
     const activateEditMode = () => {

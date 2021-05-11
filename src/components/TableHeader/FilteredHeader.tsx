@@ -17,7 +17,7 @@ const FilteredHeader:FC<BropsType> = ({optionsArray, id}) => {
     const [open, setOpen] = useState<boolean>(false)
     const {searchTotal, searchStatus, } = useSelector((state: AppRootStateType) => state.tableRows)
     const {disabledBtn} = useSelector((state: AppRootStateType) => state.app)
-    console.log(disabledBtn)
+
     return (
         <>
             <div className={style.close}>

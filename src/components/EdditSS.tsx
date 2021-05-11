@@ -3,7 +3,7 @@ import { createStyles } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import React, {FC} from 'react';
 import { TableRowType } from '../store/TableReducer/TableType';
-import style from './EdditSs.module.scss'
+
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -24,7 +24,7 @@ type PropsType = {
     row: TableRowType
 }
 const EdditSs:FC<PropsType> = (props) => {
-    console.log(props)
+
     const classes = useStyles();
     return (
         <div >

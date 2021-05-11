@@ -2,6 +2,7 @@ import {GridCellParams} from "@material-ui/x-grid";
 import {createStyles, makeStyles, Paper, Popper, Typography} from "@material-ui/core";
 import React from "react";
 import {isOverflown} from "@material-ui/data-grid";
+import {Order, OrderEnum, SortEnum, TableRowType} from "../store/TableReducer/TableType";
 
 interface GridCellExpandProps {
     value: string;
@@ -142,5 +143,61 @@ export const setYear = (data:string) => {
 
      if(data.trim() === '') return null
     const arrDate = data?.split('-').map(el => (+el))
-    return new Date(arrDate[0], arrDate[1] - 1, arrDate[2]).toISOString()
+    return new Date(arrDate[0], arrDate[1] - 1, arrDate[2] +1).toISOString()
+}
+export const smartSorting = (rows: TableRowType[], typeSorting: string, sortByValue: Order, keyValue: string) => {
+
+    if (typeSorting === SortEnum.NUMBER) {
+        sortByValue === OrderEnum.ASC
+            ? rows.sort(function (a, b) {
+                return b[keyValue] - a[keyValue]
+            })
+            : rows.sort(function (a, b) {
+                return a[keyValue] - b[keyValue]
+            })
+    }
+    if (typeSorting === SortEnum.STRING) {
+        sortByValue === OrderEnum.ASC
+            ? rows.sort(function (a, b) {
+
+                if (a[keyValue].toLowerCase() < b[keyValue].toLowerCase()) //сортируем строки по возрастанию
+                    return -1
+                if (a[keyValue].toLowerCase() > b[keyValue].toLowerCase())
+                    return 1
+                return 0
+            })
+            : rows.sort(function (a, b) {
+                if (a[keyValue].toLowerCase() > b[keyValue].toLowerCase()) //сортируем строки по возрастанию
+                    return -1
+                if (a[keyValue].toLowerCase() < b[keyValue].toLowerCase())
+                    return 1
+                return 0
+            })
+    }
+    if (typeSorting === SortEnum.DATE) {
+
+        sortByValue === OrderEnum.ASC
+            ? rows.sort(function (a, b) {
+                const dateA = new Date(a[keyValue]).getTime(),
+                    dateB = new Date(b[keyValue]).getTime()
+
+                return dateB - dateA
+            })
+            : rows.sort((a, b) => {
+                const dateA = new Date(a[keyValue]).getTime(),
+                    dateB = new Date(b[keyValue]).getTime()
+                return dateA - dateB
+
+            })
+    }
+    if (typeSorting === SortEnum.BOOLEAN) {
+        sortByValue === OrderEnum.ASC
+            ? rows.sort(function (a, b) {
+                return (a[keyValue] === b[keyValue]) ? 0 : a[keyValue] ? -1 : 1;
+            })
+            : rows.sort(function (a, b) {
+                return (a[keyValue] === b[keyValue]) ? 0 : a[keyValue] ? 1 : -1;
+            })
+    }
+    return rows
 }

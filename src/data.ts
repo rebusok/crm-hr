@@ -9,7 +9,7 @@ export const headCells: HeadCellsType[] = [
     {id: 'meeting', numeric: false, label: 'Встреча', sorting: false, typeSorting: SortEnum.BOOLEAN,},
     {id: 'status', numeric: false, label: 'Итог', sorting: false, typeSorting: SortEnum.STRING,},
     {id: 'recommendation', numeric: false, label: 'Рекомендации', sorting: false, typeSorting: SortEnum.STRING,},
-    {id: 'leaderInterview', numeric: false, label: 'Интервью с руководителем', sorting: true, typeSorting: SortEnum.BOOLEAN,},
+    {id: 'leaderInterview', numeric: false, label: 'РукИнт', sorting: true, typeSorting: SortEnum.BOOLEAN,},
     {id: 'total', numeric: false, label: 'Итог2.0', sorting: false, typeSorting: SortEnum.STRING,},
     {id: 'SS', numeric: false, label: 'Связь', sorting: true, typeSorting: SortEnum.DATE,},
 

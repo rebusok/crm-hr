@@ -1,9 +1,24 @@
 .avtocomplite {
   width: 200px
 }
-.container{
+
+
+.mainWrapper {
   display: flex;
-  align-items: center;
-  margin-top: 20px;
   justify-content: space-around;
+  padding: 20px;
+}
+.wrapperBtn {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.itemWrapper {
+  min-height: 72px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }

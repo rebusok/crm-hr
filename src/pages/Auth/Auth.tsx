@@ -13,7 +13,11 @@ import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {useFormik} from 'formik';
-import {ApiAuth} from "../../Api/Api";
+import {useDispatch, useSelector} from "react-redux";
+import {setLoginT} from "../../store/AuthReducer/AuthReducer";
+import {AppRootStateType} from "../../store/store";
+import {Redirect} from "react-router-dom";
+import {RoutingType} from "../../routes/Routes";
 
 function Copyright() {
     return (
@@ -56,6 +60,8 @@ type FormikErrorType = {
 
 export default function Auth() {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const {isLogin} =  useSelector((state: AppRootStateType) => state.auth)
 
     const formik = useFormik({
         initialValues: {
@@ -79,13 +85,13 @@ export default function Auth() {
         },
         onSubmit: values => {
             const {email, password, rememberMe} = values
-            ApiAuth.login(email, password, rememberMe).then(res => console.log(res))
-
-
+            dispatch(setLoginT(email, password, rememberMe))
             formik.resetForm()
         },
     })
-
+    if( isLogin) {
+        return <Redirect to={RoutingType.MAIN}/>
+    }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />

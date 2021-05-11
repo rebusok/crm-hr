@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,28 +8,22 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {Button, Checkbox, CircularProgress, TextField} from "@material-ui/core";
+import {Checkbox, CircularProgress, TextField} from "@material-ui/core";
 import EnhancedTableToolbar from "./EnhancedTableToolbar ";
 import style from './TablePage.module.scss'
-import {
-    Order,
-    OrderEnum,
-    SortEnum,
-    StatusFetchEnum,
-    StatusType,
-    TableRowType,
-    TotalType
-} from '../../store/TableReducer/TableType';
+import {Order, OrderEnum, SortEnum, StatusFetchEnum, TableRowType} from '../../store/TableReducer/TableType';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../../store/store";
 import EditableSpanText from "../../components/EditableSpanText/EditableSpanText";
 import TableHeader from "../../components/TableHeader/TableHeader";
 import TablePaginationActions from '../../components/TablePaginator/TablePaginator';
-import {currentDate, currentyTime} from "../../helper/helper";
-import {editValueRow, getPacksThunk} from "../../store/TableReducer/TableReducer";
+import {currentDate, currentyTime, setYear, smartSorting} from "../../helper/helper";
+import {editRecommendationValue, getPacksThunk, updatePack} from "../../store/TableReducer/TableReducer";
+import {Redirect} from 'react-router-dom';
+import {RoutingType} from "../../routes/Routes";
 
 
-export const user_id = '60914ab8a9c7250c8cfbb0ae'
+
 
 const useStyles2 = makeStyles((theme: Theme) =>
     createStyles({
@@ -53,19 +47,17 @@ const useStyles2 = makeStyles((theme: Theme) =>
             position: 'absolute',
             top: 20,
             width: 1,
-        },        
+        },
     }),
 );
 
 
-
-
-const  TablePage = () => {
+const TablePage = () => {
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [selected, setSelected] = React.useState<string[]>([]);
-    const [order, setOrder] = React.useState<Order>(OrderEnum.DESK);
+    const [order, setOrder] = React.useState<Order>(OrderEnum.ASC);
     const [orderBy, setOrderBy] = React.useState<string>('name');
     const [typeSort, setTypeSort] = React.useState<string>('string');
     const [searchName, setSearchName] = useState<string>('')
@@ -73,30 +65,24 @@ const  TablePage = () => {
 
     const {status, searchTotal, searchStatus, rows} = useSelector((state: AppRootStateType) => state.tableRows)
     const {disabledBtn} = useSelector((state: AppRootStateType) => state.app)
-    const [firstFetch, setFirrstFetch] = useState<boolean>(false)
+    const {isLogin} =  useSelector((state: AppRootStateType) => state.auth)
+    const profile = useSelector((state: AppRootStateType) => state.profile.profile)
     const dispatch = useDispatch();
+    const stableDispatch = useCallback(dispatch, [dispatch])
     // selected
+
     useEffect(() => {
-        console.log(firstFetch)
-        if(!firstFetch) {
-            setFirrstFetch(true)
-            return
-        }
-       else {
+        if(isLogin && profile)stableDispatch(getPacksThunk(profile._id))
+        else return
+    }, [searchTotal, searchStatus, stableDispatch, isLogin, profile])
 
-            dispatch(getPacksThunk(user_id))
-        }
-    }, [ searchTotal, searchStatus])
-    useEffect(() => {
-        dispatch(getPacksThunk(user_id))
-
-
-
-    }, [user_id])
-
+    if( ! isLogin) {
+        return <Redirect to={RoutingType.LOGIN}/>
+    }
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n:TableRowType) => n.name);
+            const newSelecteds = rows.map((n: TableRowType) => n.name);
+            console.log(newSelecteds)
             setSelected(newSelecteds);
             return;
         }
@@ -139,78 +125,29 @@ const  TablePage = () => {
         setOrderBy(keyValue)
 
     }
-    const smartSorting = (rows: TableRowType[], typeSorting: string, sortByValue: Order, keyValue: string ) => {
 
-        if (typeSorting === SortEnum.NUMBER) {
-            sortByValue === OrderEnum.ASC
-                ? rows.sort(function (a, b) {
-                    return b[keyValue] - a[keyValue]
-                })
-                : rows.sort(function (a, b) {
-                    return a[keyValue] - b[keyValue]
-                })
+
+    const changeInputSsHandler = (ssValue:string, id:string) => {
+        console.log(ssValue)
+        const currentSs = setYear(ssValue.split('.').join('-'))
+        console.log(currentSs)
+        if (currentSs !== null) {
+            dispatch(updatePack({SS:currentSs, _id: id}))
         }
-        if (typeSorting === SortEnum.STRING) {
-            sortByValue === OrderEnum.ASC
-                ? rows.sort(function (a, b) {
-
-                    if (a[keyValue].toLowerCase() < b[keyValue].toLowerCase()) //сортируем строки по возрастанию
-                        return -1
-                    if (a[keyValue].toLowerCase() > b[keyValue].toLowerCase())
-                        return 1
-                    return 0
-                })
-                : rows.sort(function (a, b) {
-                    if (a[keyValue].toLowerCase() > b[keyValue].toLowerCase()) //сортируем строки по возрастанию
-                        return -1
-                    if (a[keyValue].toLowerCase() < b[keyValue].toLowerCase())
-                        return 1
-                    return 0
-                })
-        }
-        if (typeSorting === SortEnum.DATE) {
-
-            sortByValue === OrderEnum.ASC
-                ? rows.sort(function (a, b) {
-                    const dateA = new Date(a[keyValue]).getTime(),
-                        dateB = new Date(b[keyValue]).getTime()
-
-                    return dateB - dateA
-                })
-                : rows.sort((a, b) => {
-                    const dateA = new Date(a[keyValue]).getTime(),
-                        dateB = new Date(b[keyValue]).getTime()
-                    return dateA - dateB
-
-                })
-        }
-        if (typeSorting === SortEnum.BOOLEAN) {
-            sortByValue === OrderEnum.ASC
-                ? rows.sort(function (a, b) {
-                    return (a[keyValue] === b[keyValue]) ? 0 : a[keyValue] ? -1 : 1;
-                })
-                : rows.sort(function (a, b) {
-                    return (a[keyValue] === b[keyValue]) ? 0 : a[keyValue] ? 1 : -1;
-                })
-        }
-        return rows
     }
 
-    const testHandler = () => {
-        setCurrentSearchName(searchName)
-        setSearchName('')
-    }
-
-    const searchHangler = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const searchHangler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setSearchName(e.currentTarget.value)
     }
     const filteredByName = rows.filter(el => {
         return el.name.toLowerCase().includes(currentsearchName.toLowerCase())
     })
-    const changeInputRecHandler = (newValue:string, id:string) => {
-
-        dispatch(editValueRow(newValue, id))
+    const changeInputRecHandler = (recommendation: string, id: string) => {
+        dispatch(updatePack({recommendation, _id: id}))
+        console.log(recommendation, id)
+        dispatch(editRecommendationValue(recommendation, id))
     }
+
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
     return (
         <Paper>
@@ -229,10 +166,12 @@ const  TablePage = () => {
                     {status === StatusFetchEnum.LOADING ?
                         <TableBody>
                             <TableRow>
-                                <TableCell style={{width: 100}}><div className={style.divSpinner}><CircularProgress /></div></TableCell>
+                                <TableCell style={{width: 100}}>
+                                    <div className={style.divSpinner}><CircularProgress/></div>
+                                </TableCell>
                             </TableRow>
                         </TableBody>
-                    :    <TableBody>
+                        : <TableBody>
                             {(rowsPerPage > 0
                                     ? smartSorting(filteredByName, typeSort, order, orderBy).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     : smartSorting(filteredByName, typeSort, order, orderBy)
@@ -249,7 +188,7 @@ const  TablePage = () => {
                                                   selected={isItemSelected}
 
                                         >
-                                            <TableCell padding="checkbox" >
+                                            <TableCell padding="checkbox">
                                                 <Checkbox
                                                     checked={isItemSelected}
                                                     disabled={disabledBtn}
@@ -257,11 +196,12 @@ const  TablePage = () => {
                                                     onClick={(event) => handleClick(event, row._id)}
                                                 />
                                             </TableCell>
-                                            <TableCell style={{width: 100}} component="th" scope="row" id={labelId} align="center" >
-                                                { currentDate.format(new Date(row.date))}
+                                            <TableCell style={{width: 100}} component="th" scope="row" id={labelId}
+                                                       align="center">
+                                                {currentDate.format(new Date(row.date))}
                                             </TableCell>
-                                            <TableCell style={{width: 60}} align="center" >
-                                                { currentyTime.format(new Date(row.date))}
+                                            <TableCell style={{width: 60}} align="center">
+                                                {currentyTime.format(new Date(row.date))}
                                             </TableCell>
                                             <TableCell style={{width: 80}} align="center">
                                                 {row.position}
@@ -270,7 +210,7 @@ const  TablePage = () => {
                                                 {row.name}
                                             </TableCell>
                                             <TableCell style={{width: 100}} align="center">
-                                                {row.meeting ? <span>yes</span> :  <span>No</span>}
+                                                {row.meeting ? <span>yes</span> : <span>No</span>}
                                             </TableCell>
                                             <TableCell style={{width: 160}} align="center">
                                                 {row.status}
@@ -286,16 +226,16 @@ const  TablePage = () => {
 
                                             </TableCell>
                                             <TableCell style={{width: 100}} align="center">
-                                                {row.leaderInterview ? <span>yes</span> :  <span>No</span>}
+                                                {row.leaderInterview ? <span>yes</span> : <span>No</span>}
                                             </TableCell>
                                             <TableCell style={{width: 160}} align="center">
                                                 {row.total}
                                             </TableCell>
                                             <TableCell style={{width: 160}} align="center">
                                                 <EditableSpanText
-                                                    value={row.SS ? row.SS.slice(0, 10).split('-').join('.') :  ''}
+                                                    value={row.SS ? row.SS.slice(0, 10).split('-').join('.') : ''}
                                                     blured={true}
-                                                    onChanges={testHandler}
+                                                    onChanges={changeInputSsHandler}
                                                     idRow={row._id}
                                                     typeSpan={SortEnum.DATE}
                                                 />
@@ -326,8 +266,8 @@ const  TablePage = () => {
                     </TableFooter>
                 </Table>
             </TableContainer>
-            <TextField id="standard-basic" label="Standard"  onChange={(e) => searchHangler(e)} value={searchName}/>
-            <Button onClick={testHandler}>CLISK</Button>
+            <TextField id="standard-basic" label="Standard" onChange={(e) => searchHangler(e)} value={searchName}/>
+
         </Paper>
 
     );

@@ -3,6 +3,7 @@ import {AppThunk} from "../store";
 import {ApiAuth} from "../../Api/Api";
 import {cleanProfile, setProfileAc} from "./ProfileReducer";
 import {setDisabledBtn, setInitialApp} from "../appReducer/AppReducer";
+import {HelperErrorCatch} from "../../helper/error-handler";
 
 export interface stateProps {
     isLogin: boolean
@@ -54,14 +55,8 @@ export const setLoginT = (email: string, password: string, rememberMe: boolean):
         dispatch(setErrorMes(''))
         dispatch(setStatusAC(StatusFetchEnum.OK))
     }catch (e) {
-        const error = e.response
-            ? e.response.data.error
-            : (e.message + ', more details in the console');
-        console.log(error)
-        console.log('Error:', {...e})
-        dispatch(setErrorMes(error))
+        HelperErrorCatch(e, dispatch)
         dispatch(setLoginAC(false))
-        dispatch(setStatusAC(StatusFetchEnum.FAIL))
     }finally {
         dispatch(setDisabledBtn(false))
     }
@@ -76,13 +71,8 @@ export const setAuthMe = (): AppThunk => async (dispatch) => {
         dispatch(setLoginAC(true))
         dispatch(setStatusAC(StatusFetchEnum.OK))
     }catch (e) {
-        const error = e.response
-            ? e.response.data.error
-            : (e.message + ', more details in the console');
-        console.log(error)
-        console.log('Error:', {...e})
+        HelperErrorCatch(e, dispatch)
         dispatch(setLoginAC(false))
-        dispatch(setStatusAC(StatusFetchEnum.FAIL))
     }finally {
         dispatch(setInitialApp(true))
         dispatch(setDisabledBtn(false))
@@ -96,13 +86,7 @@ export const setRegistration = (email: string, password: string): AppThunk  => a
         dispatch(setErrorMes(''))
         dispatch(setStatusAC(StatusFetchEnum.OK))
     }catch (e) {
-        const error = e.response
-            ? e.response.data.error
-            : (e.message + ', more details in the console');
-        console.log(error)
-        console.log('Error:', {...e})
-        dispatch(setLoginAC(false))
-        dispatch(setStatusAC(StatusFetchEnum.FAIL))
+        HelperErrorCatch(e, dispatch)
     } finally {
         dispatch(setDisabledBtn(false))
     }
@@ -117,13 +101,7 @@ export const setLogOut = (): AppThunk =>async (dispatch) => {
         dispatch(setStatusAC(StatusFetchEnum.OK))
         dispatch(cleanProfile())
     }catch (e) {
-        const error = e.response
-            ? e.response.data.error
-            : (e.message + ', more details in the console');
-        console.log(error)
-        dispatch(setErrorMes(error))
-        console.log('Error:', {...e})
-        dispatch(setStatusAC('failed'))
+        HelperErrorCatch(e, dispatch)
     }finally {
         dispatch(setDisabledBtn(false))
     }

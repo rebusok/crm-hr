@@ -1,9 +1,9 @@
-import {HeadCellsType, RequestStatusType, StatusFetchEnum, TableRowType} from './TableType'
-import { rows} from "../../data";
-import {AppActionType, AppRootStateType} from "../store";
-import {ThunkDispatch} from "redux-thunk";
-import {ApiCandidatePack} from "../../Api/Api";
+import {RequestStatusType, StatusFetchEnum, TableRowType} from './TableType'
+import {rows} from "../../data";
+import {AppThunk} from "../store";
+import {ApiCandidatePack, candidatePackUpdate} from "../../Api/Api";
 import {setDisabledBtn} from "../appReducer/AppReducer";
+import {HelperErrorCatch} from "../../helper/error-handler";
 
 const initialState: TableTypeInit = {
     rows: rows,
@@ -37,10 +37,10 @@ export enum ActionType {
 }
 
 //actions
-export type tableActionsType = ReturnType<typeof editTable> | ReturnType<typeof editTableSucses>
-    | ReturnType<typeof clearEdditTabler>
+export type tableActionsType = ReturnType<typeof editTable> | ReturnType<typeof editTableSuccess>
+    | ReturnType<typeof clearEditTable>
     | ReturnType<typeof AddNewTable>
-    | ReturnType<typeof editValueRow>
+    | ReturnType<typeof editRecommendationValue>
     | ReturnType<typeof addSearchStatus>
     | ReturnType<typeof addSearchTotal>
     | ReturnType<typeof fetchCandidatesPack>
@@ -52,8 +52,7 @@ export const TableReducer = (state: TableTypeInit = initialState, action: tableA
     switch (action.type) {
 
         case ActionType.EDIT_TABLE_ROW:
-
-            const fileredArray = state.rows.filter(a => action.ArrayId.includes(a.id))
+            const fileredArray = state.rows.filter(a => action.ArrayId.includes(a._id))
            return {...state, edditRows: fileredArray}
 
         case ActionType.EDIT_TABLE_ROW_SUCSESS:
@@ -85,11 +84,11 @@ export const TableReducer = (state: TableTypeInit = initialState, action: tableA
 }
 
 export const editTable = (ArrayId:string[]) => ({type:ActionType.EDIT_TABLE_ROW, ArrayId} as const)
-export const editTableSucses = (row:TableRowType) => ({type:ActionType.EDIT_TABLE_ROW_SUCSESS, row} as const)
+export const editTableSuccess = (row:TableRowType) => ({type:ActionType.EDIT_TABLE_ROW_SUCSESS, row} as const)
 export const AddNewTable = (row:TableRowType) => ({type:ActionType.ADD_NEW_TABLE, row} as const)
 
-export const clearEdditTabler = (rowId: string) => ({type: ActionType.CLEAR_EDIT_TABLE,rowId} as const)
-export const editValueRow = (value: string, id:string) => {
+export const clearEditTable = (rowId: string) => ({type: ActionType.CLEAR_EDIT_TABLE,rowId} as const)
+export const editRecommendationValue = (value: string, id:string) => {
 
     return {type: ActionType.EDIT_VALUE_ROW,value, id} as const
 }
@@ -100,7 +99,7 @@ const setStatus = (status:RequestStatusType) => ({type:ActionType.SET_FETCH_STAT
 const setTotalCount= (totalCount:number) => ({type:ActionType.SET_TOTAL_COUNT, totalCount} as const)
 
 
-export const getPacksThunk = (user_id: string, ) => async (dispatch: ThunkDispatch<AppRootStateType, {}, AppActionType>,getState: () => AppRootStateType) => {
+export const getPacksThunk = (user_id: string, ): AppThunk  => async (dispatch,getState) => {
     dispatch(setStatus(StatusFetchEnum.LOADING))
     dispatch(setDisabledBtn(true))
     const packName = ''
@@ -111,18 +110,45 @@ export const getPacksThunk = (user_id: string, ) => async (dispatch: ThunkDispat
         dispatch(fetchCandidatesPack(res.data.candidatesPacks))
         dispatch(setTotalCount(res.data.totalPacks))
         dispatch(setStatus(StatusFetchEnum.OK))
-
     }catch (e) {
-        const error =  e.response
-            ? e.response.data.error
-            : (e.message + ', more details in the console');
-        console.log(error)
-        console.log('errors:', {...e})
-
+        HelperErrorCatch(e, dispatch)
     }finally {
         dispatch(setDisabledBtn(false))
     }
+}
 
+export const updatePack = (candidatePack:candidatePackUpdate): AppThunk =>  async (dispatch, getState) => {
+    dispatch(setStatus(StatusFetchEnum.LOADING))
+    dispatch(setDisabledBtn(true))
+    const userId = getState().profile.profile?._id
+    try {
+        if( userId) {
+            await  ApiCandidatePack.updateCandidatesPack(candidatePack)
+            dispatch(getPacksThunk(userId))
+        }
+        dispatch(setStatus(StatusFetchEnum.OK))
+    }catch (e) {
+        HelperErrorCatch(e, dispatch)
+    }finally {
+        dispatch(setDisabledBtn(false))
+    }
+}
+
+export const addNewCandidate = (candidatePack:candidatePackUpdate): AppThunk =>  async (dispatch, getState) => {
+    dispatch(setStatus(StatusFetchEnum.LOADING))
+    dispatch(setDisabledBtn(true))
+    const userId = getState().profile.profile?._id
+    try {
+        if( userId) {
+            await ApiCandidatePack.addNewCandidate(candidatePack)
+            dispatch(getPacksThunk(userId))
+        }
+        dispatch(setStatus(StatusFetchEnum.OK))
+    }catch (e) {
+        HelperErrorCatch(e, dispatch)
+    }finally {
+        dispatch(setDisabledBtn(false))
+    }
 }
 
 

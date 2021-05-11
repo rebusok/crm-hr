@@ -9,7 +9,7 @@ import {RoutingType} from "../../routes/Routes";
 import {editTable} from "../../store/TableReducer/TableReducer";
 import AddIcon from '@material-ui/icons/Add';
 import style from './EnhancedTableToolbar.module.css'
-import {AppRootStateType} from "../../store/store";
+import {selectDisableBtn} from "../../utils/selectors";
 
 
 export const useToolbarStyles = makeStyles((theme: Theme) =>
@@ -43,10 +43,11 @@ interface EnhancedTableToolbarProps {
 const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = (props) => {
     const classes = useToolbarStyles();
     const {numSelected} = props;
-    const {disabledBtn} = useSelector((state: AppRootStateType) => state.app)
+    const disabledBtn = useSelector(selectDisableBtn)
     const dispatch = useDispatch()
-    console.log(disabledBtn)
     const editHandler = () => {
+
+        console.log(props.selected)
         dispatch(editTable(props.selected))
     }
     return (

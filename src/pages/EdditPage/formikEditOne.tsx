@@ -1,10 +1,12 @@
 import React, {FC} from 'react';
 import {useFormik} from "formik";
-import {TableRowType} from "../../store/TableReducer/TableType";
+import {StatusFetchEnum, TableRowType} from "../../store/TableReducer/TableType";
 import {currentDate, currentyTime, setTime, setYear} from "../../helper/helper";
-import {useDispatch} from "react-redux";
-import {clearEdditTabler, editTableSucses} from "../../store/TableReducer/TableReducer";
+import {useDispatch, useSelector} from "react-redux";
+import {clearEditTable, updatePack} from "../../store/TableReducer/TableReducer";
 import RenderFormik from "../../components/RenderFormik";
+import {AppRootStateType} from "../../store/store";
+import {CircularProgress} from "@material-ui/core";
 
 interface FormikEditOnePropsType {
     row: TableRowType
@@ -13,7 +15,7 @@ interface FormikEditOnePropsType {
 const FormikEditOne: FC<FormikEditOnePropsType> = ({row}) => {
 
     const dispatch = useDispatch();
-
+    const {status} = useSelector((state: AppRootStateType) => state.tableRows)
     const formik = useFormik({
         initialValues: {
             date: row ? currentDate.format(new Date(row.date)).split('.').reverse().join('-') : "",
@@ -30,28 +32,25 @@ const FormikEditOne: FC<FormikEditOnePropsType> = ({row}) => {
         onSubmit: (values) => {
             const time = values.time
             const date = values.date
-            console.log(values)
             if (time && date) {
 
                 const currentTime = setTime(date, time, row)
                 const currentSS = setYear(values.SS)
                 const newObject = {
-                    row: {
-                        date: currentTime,
-                        name: values.name,
-                        id: row?.id,
-                        meeting: values.meeting,
-                        total: values.total,
-                        status: values.status,
-                        position: values.position,
-                        recommendation: values.recommendation,
-                        leaderInterview: values.leaderInterview,
-                        SS: currentSS === null ? null : currentSS
-                    }
+                    date: currentTime,
+                    name: values.name,
+                    _id: row?._id,
+                    meeting: values.meeting,
+                    total: values.total,
+                    status: values.status,
+                    position: values.position,
+                    recommendation: values.recommendation,
+                    leaderInterview: values.leaderInterview,
+                    SS: currentSS === null ? null : currentSS
                 }
-                // dispatch(editTableSucses(newObject.row))
-                dispatch(clearEdditTabler(newObject.row.id))
-                console.log(newObject)
+                dispatch(updatePack(newObject))
+                dispatch(clearEditTable(newObject._id))
+
             }
 
             formik.resetForm();
@@ -68,7 +67,8 @@ const FormikEditOne: FC<FormikEditOnePropsType> = ({row}) => {
         //     return errors;
         // }
     });
-    return (
+    if(status === StatusFetchEnum.LOADING) return <CircularProgress />
+    else return (
         <RenderFormik title={'Изменить'} {...formik}/>
     );
 };

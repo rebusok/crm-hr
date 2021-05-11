@@ -1,4 +1,5 @@
 import axios from "axios";
+import {StatusType, TotalType} from "../store/TableReducer/TableType";
 
 const configOMB = {
     // localBack
@@ -27,15 +28,29 @@ export const ApiAuth = {
 }
 
 export const ApiCandidatePack = {
-    addNewCandidate(candidatesPack:any) {
+    addNewCandidate(candidatesPack:candidatePackUpdate) {
         return axiosInstance.post('candidates/pack', {candidatesPack:candidatesPack})
     },
     getCandidatesPack (user_id:string, packName?: string, searchStatus?: string, searchTotal?:string, sortPacks?:string) {
         return axiosInstance.get('candidates/pack', {params:{user_id, packName, searchStatus, searchTotal, sortPacks}})
     },
-    updateCandidatesPack(candidatePack:any) {
+    updateCandidatesPack(candidatePack:candidatePackUpdate) {
         return axiosInstance.put('candidates/pack', {candidatePack})
     }
+}
+
+
+export interface candidatePackUpdate {
+    name?: string
+    _id?: string
+    position?: string
+    status?: StatusType
+    recommendation?: string
+    leaderInterview?: boolean
+    date?: string
+    SS?: string | null
+    total?: TotalType
+    meeting?: boolean
 }
 
 

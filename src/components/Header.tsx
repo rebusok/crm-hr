@@ -1,13 +1,10 @@
-import {Button, makeStyles, Toolbar} from '@material-ui/core';
-import { Theme } from '@material-ui/core';
-import { IconButton } from '@material-ui/core';
-import { createStyles } from '@material-ui/core';
-import { AppBar } from '@material-ui/core';
+import {AppBar, createStyles, IconButton, makeStyles, Theme, Toolbar} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import MenuIcon from '@material-ui/icons/Menu';
 import {RoutingType} from "../routes/Routes";
-import { NavLink } from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {

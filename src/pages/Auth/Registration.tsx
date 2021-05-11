@@ -15,16 +15,16 @@ const candidatesPack = {
 }
 const candidatePack = {
     _id: "6091761bd324ca0e344fca94",
-    SS: new Date(),
+    SS: new Date().toISOString(),
     leaderInterview: true,
     name: "ПЕТРО",
     recommendation: "ПОМЕНЯЛ",
-    status: "отказ",
-    total:"Отказ-руководителя",
+    status: "отказ" as StatusType,
+    total:"Отказ-руководителя" as TotalType,
 }
 const user_id = '60914ab8a9c7250c8cfbb0ae'
-const packName = 'Юрий'
-const searchStatus = 'думает'
+// const packName = 'Юрий'
+// const searchStatus = 'думает'
 const Registration = () => {
     const [login,setLogin] = useState<string>('yury.grush@gmail.com')
     const [password, setPassword] = useState<string>('223044ss')
@@ -54,7 +54,7 @@ const Registration = () => {
         })
     }
     const testSendNewPack = () => {
-        ApiCandidatePack.addNewCandidate(candidatesPack).then(res =>  console.log(res))
+
     }
     const testGetPack = () => {
         ApiCandidatePack.getCandidatesPack(user_id,undefined, undefined, undefined, '1SS').then(res =>  console.log(res))

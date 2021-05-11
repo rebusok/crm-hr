@@ -6,10 +6,9 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import style from './SelectedHeader.module.scss'
 import {StatusEnum, StatusType, TotalEnum, TotalType} from "../../store/TableReducer/TableType";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {addSearchStatus, addSearchTotal} from "../../store/TableReducer/TableReducer";
 import {Button} from "@material-ui/core";
-import {AppRootStateType} from "../../store/store";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,7 +35,7 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, id, se
 
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState<string >('');
-    const {disabledBtn} = useSelector((state: AppRootStateType) => state.app)
+
     const dispath= useDispatch();
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
 

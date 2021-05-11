@@ -1,7 +1,5 @@
-import React, {useEffect} from 'react';
+import React, {forwardRef, useEffect} from 'react';
 import MaterialTable from "material-table";
-import { forwardRef } from 'react';
-
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -20,9 +18,7 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../../store/store";
 import {getPacksThunk} from "../../store/TableReducer/TableReducer";
-import {user_id} from "./TablePage";
-import {StatusEnum, TotalEnum, TotalType} from "../../store/TableReducer/TableType";
-import {log} from "util";
+import {StatusEnum, TotalEnum} from "../../store/TableReducer/TableType";
 
 const tableIcons = {
     Add: forwardRef<SVGSVGElement>((props, ref) => <AddBox {...props} ref={ref} />),
@@ -64,11 +60,11 @@ const TestTable = () => {
     const {status, searchTotal, searchStatus, rows} = useSelector((state: AppRootStateType) => state.tableRows)
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getPacksThunk(user_id))
+        // dispatch(getPacksThunk(user_id))
 
 
 
-    }, [user_id])
+    }, [])
 
     return (
         <MaterialTable

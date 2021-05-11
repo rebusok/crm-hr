@@ -34,6 +34,5 @@ export const AppReducer = (state: stateProps = initialState, action: AppType): s
 
 export const setInitialApp = (isInitial:boolean) => ({type:ActionType.SET_INITIAL_APP, payload:{isInitial}})
 export const setDisabledBtn= (disabledBtn:boolean) => {
-    console.log('DIASDSADA')
     return{type:ActionType.SET_DISABLED_BTN, payload:{disabledBtn}}
 }
