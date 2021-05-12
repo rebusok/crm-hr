@@ -4,6 +4,7 @@ import EditPage from "../pages/EdditPage/EdditPage";
 import TablePage from "../pages/Main/TablePage";
 import AddNewPage from "../pages/AddNewPage/AddNewPage";
 import Auth from "../pages/Auth/Auth";
+import Statistic from "../pages/Statistic/Statistic";
 
 
 
@@ -11,7 +12,8 @@ export enum RoutingType{
     MAIN='/',
     EDIT='/edit',
     ADD='/add',
-    LOGIN='/login'
+    LOGIN='/login',
+    STATISTIC='/statistic'
 }
 
 
@@ -24,6 +26,7 @@ const Routes:FC = () => {
                 <Route exact path={`${RoutingType.EDIT}`} render={() => <EditPage/>}/>
                 <Route exact path={`${RoutingType.ADD}`} render={() => <AddNewPage/>}/>
                 <Route exact path={`${RoutingType.LOGIN}`} render={() => <Auth/>}/>
+                <Route exact path={`${RoutingType.STATISTIC}`} render={() => <Statistic/>}/>
             </Switch>
         </>
     );

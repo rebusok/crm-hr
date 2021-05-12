@@ -1,11 +1,9 @@
 import React, {useCallback, useEffect} from 'react';
-import Header from "../components/Header";
-
-import Routes from '../routes/Routes';
 import {useDispatch, useSelector} from "react-redux";
 import {setAuthMe} from "../store/AuthReducer/AuthReducer";
 import {AppRootStateType} from "../store/store";
 import {CircularProgress} from "@material-ui/core";
+import Layout from "../components/wrapped/Layout/Layout";
 
 
 function App() {
@@ -23,8 +21,7 @@ function App() {
     }
     return (
         <>
-            <Header/>
-            <Routes/>
+            <Layout/>
             {/*<Auth/>*/}
             {/*<TestTable/>*/}
         </>

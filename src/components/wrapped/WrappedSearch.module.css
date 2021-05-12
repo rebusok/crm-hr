@@ -1,0 +1,12 @@
+.open{
+    height: 100%;
+    opacity: 1;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out;
+}
+.close{
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out;
+}

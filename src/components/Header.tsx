@@ -1,9 +1,7 @@
 import {AppBar, createStyles, IconButton, makeStyles, Theme, Toolbar} from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import React from 'react';
+import React, {FC} from 'react';
 import MenuIcon from '@material-ui/icons/Menu';
-import {RoutingType} from "../routes/Routes";
-import {NavLink} from 'react-router-dom';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,22 +16,20 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
-const Header = () => {
+type MenuToggleType = {
+    onToggle: () => void
+    isOpen: boolean
+}
+const Header:FC<MenuToggleType> = ({isOpen, onToggle}) => {
 
     const classes = useStyles();
     return (
         <>
-            <AppBar position="static">
+            <AppBar >
                 <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" >
-                        <MenuIcon />
+                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={onToggle} >
+                        {!isOpen ? <MenuIcon /> : <CloseIcon/>}
                     </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        <NavLink to={RoutingType.MAIN}>Меню</NavLink>
-                    </Typography>
-                    <Typography variant="h6" className={classes.title}>
-                        <NavLink to={RoutingType.LOGIN}>Login</NavLink>
-                    </Typography>
                 </Toolbar>
             </AppBar>
         </>

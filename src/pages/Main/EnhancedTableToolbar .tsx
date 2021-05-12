@@ -1,5 +1,5 @@
 import {createStyles, IconButton, lighten, makeStyles, Theme, Toolbar, Tooltip, Typography} from '@material-ui/core';
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import clsx from 'clsx';
 import EditIcon from '@material-ui/icons/Edit';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -10,6 +10,8 @@ import {editTable} from "../../store/TableReducer/TableReducer";
 import AddIcon from '@material-ui/icons/Add';
 import style from './EnhancedTableToolbar.module.css'
 import {selectDisableBtn} from "../../utils/selectors";
+import WrappedSearch from "../../components/wrapped/WrappedSearch";
+import SearchForm from "../../components/Form/SearchForm";
 
 
 export const useToolbarStyles = makeStyles((theme: Theme) =>
@@ -38,6 +40,7 @@ interface EnhancedTableToolbarProps {
     numSelected: number;
     setSelected: Function
     selected: string[]
+    setCurrentSearchName: (value:string) => void
 }
 
 const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = (props) => {
@@ -45,10 +48,14 @@ const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = (props) => {
     const {numSelected} = props;
     const disabledBtn = useSelector(selectDisableBtn)
     const dispatch = useDispatch()
+    const [open, setOpen] = useState(true)
     const editHandler = () => {
-
         console.log(props.selected)
         dispatch(editTable(props.selected))
+    }
+
+    const onToggleHandler = () => {
+        setOpen(!open)
     }
     return (
         <>
@@ -85,15 +92,22 @@ const EnhancedTableToolbar: FC<EnhancedTableToolbarProps> = (props) => {
                         </span>
                     </Tooltip>
                 ) : (
+                    <>
                     <Tooltip title="Filter list">
                         <span>
-                            <IconButton aria-label="filter list" disabled={disabledBtn}>
+                            <IconButton aria-label="filter list" disabled={disabledBtn} onClick={onToggleHandler}>
                             <FilterListIcon/>
                         </IconButton>
                         </span>
                     </Tooltip>
+
+                    </>
                 )}
+
             </Toolbar>
+            <WrappedSearch closeProps={open}>
+                <SearchForm disabledBtn={disabledBtn} setCurrentSearchName={props.setCurrentSearchName} closeProps={open}/>
+            </WrappedSearch>
         </>
     );
 };

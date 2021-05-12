@@ -151,7 +151,7 @@ const TablePage = () => {
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
     return (
         <Paper>
-            <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected}/>
+            <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} setCurrentSearchName={setCurrentSearchName}/>
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="custom pagination table">
                     <TableHeader

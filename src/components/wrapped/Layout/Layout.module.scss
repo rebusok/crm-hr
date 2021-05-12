@@ -1,0 +1,40 @@
+.Layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: Roboto;
+  justify-content: center;
+  align-items: center;
+
+  color: #fff;
+
+}
+.dark {
+  background: rgb(19,18,19);
+  background: linear-gradient(90deg, rgba(19,18,19,0.9864320728291317) 0%, rgba(96,70,112,1) 50%, rgba(89,101,105,1) 100%);
+}
+
+.dark-text {
+  color: aliceblue;
+}
+
+.red {
+  background: rgb(63,94,251);
+  background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+}
+
+.red-text {
+  color: aqua;
+}
+
+.some {
+  background: linear-gradient(90deg, #5041b2 0%, #7969e6 100%);
+}
+
+.some-text {
+  color: darkslateblue;
+}
+.content {
+  margin-top: 64px;
+}
