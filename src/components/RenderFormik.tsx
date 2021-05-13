@@ -2,7 +2,14 @@ import React from 'react';
 import {Button, Checkbox, FormControlLabel, TextField} from "@material-ui/core";
 import style from "../pages/EdditPage/FormikEditOne.module.scss";
 import MenuItem from "@material-ui/core/MenuItem";
-import {StatusEnum, StatusType, TotalEnum, TotalType} from "../store/TableReducer/TableType";
+import {
+    PositionEnum,
+    PositionType,
+    StatusEnum,
+    StatusType,
+    TotalEnum,
+    TotalType
+} from "../store/TableReducer/TableType";
 import {FormikProps} from "formik";
 
 
@@ -15,7 +22,7 @@ interface FormValues {
     time: string
     name: string
     meeting: boolean,
-    position: string
+    position: PositionType
     status: StatusType
     recommendation: string
     leaderInterview: boolean
@@ -26,6 +33,7 @@ interface FormValues {
 const RenderFormik = (props: RenderFormikProps & FormikProps<FormValues>) => {
     const optionsArrayStatus = [StatusEnum.OK, StatusEnum.NO, StatusEnum.THINK]
     const optionsArrayTotal = [TotalEnum.OFER, TotalEnum.CANSEL, TotalEnum.CANSEL_LID, TotalEnum.TRANING]
+    const optionsArrayPosition= [PositionEnum.KARATIST, PositionEnum.SLESAR, PositionEnum.PRESIDENT, PositionEnum.TRACTORIS]
     return (
         <div>
             <form onSubmit={props.handleSubmit} className={style.container}>
@@ -59,7 +67,22 @@ const RenderFormik = (props: RenderFormikProps & FormikProps<FormValues>) => {
                             />
                         </div>
                         <div className={style.itemWrapper}>
-                            <TextField required label="Должность" {...props.getFieldProps('position')}/>
+                            <TextField
+                                select
+                                label="Должность"
+                                variant="standard"
+                                margin="normal"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                {...props.getFieldProps('position')}
+                            >
+                                {optionsArrayPosition.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
                         </div>
                         <div className={style.itemWrapper}>
                             <TextField required label="ФИО" {...props.getFieldProps('name')}/>
@@ -103,7 +126,7 @@ const RenderFormik = (props: RenderFormikProps & FormikProps<FormValues>) => {
                         <div className={style.itemWrapper}>
                             <TextField
                                 select
-                                label="Итог"
+                                label="Итог 2.0"
                                 variant="standard"
                                 margin="normal"
                                 InputLabelProps={{

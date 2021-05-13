@@ -8,7 +8,7 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {Checkbox, CircularProgress, TextField} from "@material-ui/core";
+import {Box, Checkbox, CircularProgress, TextField} from "@material-ui/core";
 import EnhancedTableToolbar from "./EnhancedTableToolbar ";
 import style from './TablePage.module.scss'
 import {Order, OrderEnum, SortEnum, StatusFetchEnum, TableRowType} from '../../store/TableReducer/TableType';
@@ -21,8 +21,6 @@ import {currentDate, currentyTime, setYear, smartSorting} from "../../helper/hel
 import {editRecommendationValue, getPacksThunk, updatePack} from "../../store/TableReducer/TableReducer";
 import {Redirect} from 'react-router-dom';
 import {RoutingType} from "../../routes/Routes";
-
-
 
 
 const useStyles2 = makeStyles((theme: Theme) =>
@@ -63,20 +61,25 @@ const TablePage = () => {
     const [searchName, setSearchName] = useState<string>('')
     const [currentsearchName, setCurrentSearchName] = useState<string>('')
 
-    const {status, searchTotal, searchStatus, rows} = useSelector((state: AppRootStateType) => state.tableRows)
+    const {
+        status,
+        searchTotal,
+        searchStatus,
+        rows,
+        searchPosition
+    } = useSelector((state: AppRootStateType) => state.tableRows)
     const {disabledBtn} = useSelector((state: AppRootStateType) => state.app)
-    const {isLogin} =  useSelector((state: AppRootStateType) => state.auth)
+    const {isLogin} = useSelector((state: AppRootStateType) => state.auth)
     const profile = useSelector((state: AppRootStateType) => state.profile.profile)
     const dispatch = useDispatch();
     const stableDispatch = useCallback(dispatch, [dispatch])
     // selected
-
     useEffect(() => {
-        if(isLogin && profile)stableDispatch(getPacksThunk(profile._id))
+        if (isLogin && profile) stableDispatch(getPacksThunk(profile._id))
         else return
-    }, [searchTotal, searchStatus, stableDispatch, isLogin, profile])
+    }, [searchTotal, searchStatus, stableDispatch, isLogin, profile, searchPosition])
 
-    if( ! isLogin) {
+    if (!isLogin) {
         return <Redirect to={RoutingType.LOGIN}/>
     }
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,12 +130,12 @@ const TablePage = () => {
     }
 
 
-    const changeInputSsHandler = (ssValue:string, id:string) => {
+    const changeInputSsHandler = (ssValue: string, id: string) => {
         console.log(ssValue)
         const currentSs = setYear(ssValue.split('.').join('-'))
         console.log(currentSs)
         if (currentSs !== null) {
-            dispatch(updatePack({SS:currentSs, _id: id}))
+            dispatch(updatePack({SS: currentSs, _id: id}))
         }
     }
 
@@ -150,126 +153,126 @@ const TablePage = () => {
 
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
     return (
-        <Paper>
-            <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} setCurrentSearchName={setCurrentSearchName}/>
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="custom pagination table">
-                    <TableHeader
-                        onSelectAllClick={handleSelectAllClick}
-                        rowCount={rows.length}
-                        numSelected={selected.length}
-                        onRequestSort={testSotr}
-                        classes={classes}
-                        order={order}
+        <Box margin={1}>
+            <Paper>
+                <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected}
+                                      setCurrentSearchName={setCurrentSearchName}/>
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="custom pagination table">
+                        <TableHeader
+                            onSelectAllClick={handleSelectAllClick}
+                            rowCount={rows.length}
+                            numSelected={selected.length}
+                            onRequestSort={testSotr}
+                            classes={classes}
+                            order={order}
 
-                    />
-                    {status === StatusFetchEnum.LOADING ?
-                        <TableBody>
+                        />
+                        {status === StatusFetchEnum.LOADING ?
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell style={{width: 100}}>
+                                        <div className={style.divSpinner}><CircularProgress/></div>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                            : <TableBody>
+                                {(rowsPerPage > 0
+                                        ? smartSorting(filteredByName, typeSort, order, orderBy).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        : smartSorting(filteredByName, typeSort, order, orderBy)
+                                ).map((row, index) => {
+                                        const isItemSelected = isSelected(row._id);
+
+                                        const labelId = `enhanced-table-checkbox-${index}`;
+                                        return (
+
+                                            <TableRow key={row._id}
+                                                      tabIndex={-1}
+                                                      role="checkbox"
+                                                      hover
+                                                      selected={isItemSelected}
+
+                                            >
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        checked={isItemSelected}
+                                                        disabled={disabledBtn}
+                                                        inputProps={{'aria-labelledby': labelId}}
+                                                        onClick={(event) => handleClick(event, row._id)}
+                                                    />
+                                                </TableCell>
+                                                <TableCell style={{width: 100}} component="th" scope="row" id={labelId}
+                                                           align="center">
+                                                    {currentDate.format(new Date(row.date))}
+                                                </TableCell>
+                                                <TableCell style={{width: 60}} align="center">
+                                                    {currentyTime.format(new Date(row.date))}
+                                                </TableCell>
+                                                <TableCell style={{width: 80}} align="center">
+                                                    {row.position}
+                                                </TableCell>
+                                                <TableCell style={{width: 100}} align="center">
+                                                    {row.name}
+                                                </TableCell>
+                                                <TableCell style={{width: 100}} align="center">
+                                                    {row.meeting ? <span>yes</span> : <span>No</span>}
+                                                </TableCell>
+                                                <TableCell style={{width: 160}} align="center">
+                                                    {row.status}
+                                                </TableCell>
+                                                <TableCell style={{width: 160}} align="left">
+                                                    <EditableSpanText
+                                                        value={row.recommendation}
+                                                        idRow={row._id}
+                                                        blured={true}
+                                                        onChanges={changeInputRecHandler}
+                                                        typeSpan={SortEnum.STRING}
+                                                    />
+
+                                                </TableCell>
+                                                <TableCell style={{width: 100}} align="center">
+                                                    {row.leaderInterview ? <span>yes</span> : <span>No</span>}
+                                                </TableCell>
+                                                <TableCell style={{width: 160}} align="center">
+                                                    {row.total}
+                                                </TableCell>
+                                                <TableCell style={{width: 160}} align="center">
+                                                    <EditableSpanText
+                                                        value={row.SS ? row.SS.slice(0, 10).split('-').join('.') : ''}
+                                                        blured={true}
+                                                        onChanges={changeInputSsHandler}
+                                                        idRow={row._id}
+                                                        typeSpan={SortEnum.DATE}
+                                                    />
+
+                                                </TableCell>
+
+                                            </TableRow>
+                                        )
+                                    }
+                                )}
+
+                            </TableBody>
+                        }
+
+                        <TableFooter>
                             <TableRow>
-                                <TableCell style={{width: 100}}>
-                                    <div className={style.divSpinner}><CircularProgress/></div>
-                                </TableCell>
+                                <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25, {label: 'All', value: -1}]}
+                                    colSpan={9}
+                                    count={rows.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onChangePage={handleChangePage}
+                                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                                    ActionsComponent={TablePaginationActions}
+                                />
                             </TableRow>
-                        </TableBody>
-                        : <TableBody>
-                            {(rowsPerPage > 0
-                                    ? smartSorting(filteredByName, typeSort, order, orderBy).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : smartSorting(filteredByName, typeSort, order, orderBy)
-                            ).map((row, index) => {
-                                    const isItemSelected = isSelected(row._id);
-
-                                    const labelId = `enhanced-table-checkbox-${index}`;
-                                    return (
-
-                                        <TableRow key={row._id}
-                                                  tabIndex={-1}
-                                                  role="checkbox"
-                                                  hover
-                                                  selected={isItemSelected}
-
-                                        >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    checked={isItemSelected}
-                                                    disabled={disabledBtn}
-                                                    inputProps={{'aria-labelledby': labelId}}
-                                                    onClick={(event) => handleClick(event, row._id)}
-                                                />
-                                            </TableCell>
-                                            <TableCell style={{width: 100}} component="th" scope="row" id={labelId}
-                                                       align="center">
-                                                {currentDate.format(new Date(row.date))}
-                                            </TableCell>
-                                            <TableCell style={{width: 60}} align="center">
-                                                {currentyTime.format(new Date(row.date))}
-                                            </TableCell>
-                                            <TableCell style={{width: 80}} align="center">
-                                                {row.position}
-                                            </TableCell>
-                                            <TableCell style={{width: 100}} align="center">
-                                                {row.name}
-                                            </TableCell>
-                                            <TableCell style={{width: 100}} align="center">
-                                                {row.meeting ? <span>yes</span> : <span>No</span>}
-                                            </TableCell>
-                                            <TableCell style={{width: 160}} align="center">
-                                                {row.status}
-                                            </TableCell>
-                                            <TableCell style={{width: 160}} align="left">
-                                                <EditableSpanText
-                                                    value={row.recommendation}
-                                                    idRow={row._id}
-                                                    blured={true}
-                                                    onChanges={changeInputRecHandler}
-                                                    typeSpan={SortEnum.STRING}
-                                                />
-
-                                            </TableCell>
-                                            <TableCell style={{width: 100}} align="center">
-                                                {row.leaderInterview ? <span>yes</span> : <span>No</span>}
-                                            </TableCell>
-                                            <TableCell style={{width: 160}} align="center">
-                                                {row.total}
-                                            </TableCell>
-                                            <TableCell style={{width: 160}} align="center">
-                                                <EditableSpanText
-                                                    value={row.SS ? row.SS.slice(0, 10).split('-').join('.') : ''}
-                                                    blured={true}
-                                                    onChanges={changeInputSsHandler}
-                                                    idRow={row._id}
-                                                    typeSpan={SortEnum.DATE}
-                                                />
-
-                                            </TableCell>
-
-                                        </TableRow>
-                                    )
-                                }
-                            )}
-
-                        </TableBody>
-                    }
-
-                    <TableFooter>
-                        <TableRow>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, {label: 'All', value: -1}]}
-                                colSpan={9}
-                                count={rows.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onChangePage={handleChangePage}
-                                onChangeRowsPerPage={handleChangeRowsPerPage}
-                                ActionsComponent={TablePaginationActions}
-                            />
-                        </TableRow>
-                    </TableFooter>
-                </Table>
-            </TableContainer>
-            <TextField id="standard-basic" label="Standard" onChange={(e) => searchHangler(e)} value={searchName}/>
-
-        </Paper>
-
+                        </TableFooter>
+                    </Table>
+                </TableContainer>
+            </Paper>
+        </Box>
     );
 }
 export default TablePage

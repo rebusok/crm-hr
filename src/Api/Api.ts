@@ -31,8 +31,8 @@ export const ApiCandidatePack = {
     addNewCandidate(candidatesPack:candidatePackUpdate) {
         return axiosInstance.post('candidates/pack', {candidatesPack:candidatesPack})
     },
-    getCandidatesPack (user_id:string, packName?: string, searchStatus?: string, searchTotal?:string, sortPacks?:string) {
-        return axiosInstance.get('candidates/pack', {params:{user_id, packName, searchStatus, searchTotal, sortPacks}})
+    getCandidatesPack (user_id:string, packName?: string, searchStatus?: string, searchTotal?:string,searchPosition?:string, sortPacks?:string) {
+        return axiosInstance.get('candidates/pack', {params:{user_id, packName, searchStatus, searchTotal, sortPacks, searchPosition}})
     },
     updateCandidatesPack(candidatePack:candidatePackUpdate) {
         return axiosInstance.put('candidates/pack', {candidatePack})

@@ -1,6 +1,9 @@
 
 export type StatusType = 'подошел' | 'отказ' | 'думает';
-export type TotalType = 'Выход на работу' | 'Стажировка'| 'Отказ' | 'Отк-Рук'
+export type TotalType = 'Выход на работу' | 'Стажировка'| 'Отказ' | 'Отк-Рук';
+export type TypeSort = 'string' | 'number' | 'date' | 'boolean';
+export type PositionType = 'Тракторист' | 'Каратист' | 'Президент' | 'Слесарь';
+export type RequestStatusType = 'loading' | 'succeeded' | 'failed'
 export type TableRowType = {
     [key: string]: any
     SS: string | null,
@@ -20,13 +23,13 @@ export type TableRowType = {
     __v: number
     _id: string,
 
-    position: string,
+    position: PositionType,
     meeting: boolean,
 }
 
 
 export type Order = 'asc' | 'desc';
-export type TypeSort = 'string' | 'number' | 'date' | 'boolean'
+
 export enum OrderEnum {
     ASC= 'asc',
     DESK = 'desc'
@@ -52,7 +55,7 @@ export enum StatusEnum {
     NO = 'отказ',
     THINK = 'думает'
 }
-export type RequestStatusType = 'loading' | 'succeeded' | 'failed'
+
 export enum TotalEnum{
     OFER= 'Выход на работу',
     CANSEL = 'Отказ',
@@ -63,4 +66,11 @@ export enum StatusFetchEnum {
     OK = 'succeeded',
     LOADING = 'loading',
     FAIL = 'failed'
+}
+
+export enum PositionEnum {
+    TRACTORIS = 'Тракторист',
+    KARATIST = 'Каратист',
+    PRESIDENT = 'Президент',
+    SLESAR = 'Слесарь'
 }

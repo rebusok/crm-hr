@@ -1,6 +1,6 @@
 import {useStyles} from "@material-ui/x-grid-data-generator/dist/cjs/_modules_/grid/components/containers/GridRootStyles";
 import React from "react";
-import {Order, OrderEnum, StatusEnum, TotalEnum, TypeSort} from "../../store/TableReducer/TableType";
+import {Order, OrderEnum, PositionEnum, StatusEnum, TotalEnum, TypeSort} from "../../store/TableReducer/TableType";
 import {IconButton, TableHead} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
@@ -27,6 +27,7 @@ function TableHeader(props: EnhancedTableProps) {
     const {onRequestSort } = props;
     const optionsArrayStatus = [StatusEnum.OK, StatusEnum.NO, StatusEnum.THINK]
     const optionsArrayTotal = [TotalEnum.OFER, TotalEnum.CANSEL, TotalEnum.CANSEL_LID, TotalEnum.TRANING]
+    const optionsArrayPosition= [PositionEnum.KARATIST, PositionEnum.SLESAR, PositionEnum.PRESIDENT, PositionEnum.TRACTORIS]
     const {disabledBtn} = useSelector((state: AppRootStateType) => state.app)
 
 
@@ -64,6 +65,14 @@ function TableHeader(props: EnhancedTableProps) {
                                     headCell.label === 'Итог2.0' ?
                                         <>
                                             <FilteredHeader optionsArray={optionsArrayTotal} id={headCell.id}/>
+                                        </>
+
+                                        : null
+                                }
+                                {
+                                    headCell.label === 'Должность' ?
+                                        <>
+                                            <FilteredHeader optionsArray={optionsArrayPosition} id={headCell.id}/>
                                         </>
 
                                         : null

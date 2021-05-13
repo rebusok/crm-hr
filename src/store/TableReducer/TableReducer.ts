@@ -10,6 +10,7 @@ const initialState: TableTypeInit = {
     edditRows: [],
     searchTotal: '',
     searchStatus: '',
+    searchPosition: '',
     status: StatusFetchEnum.OK,
     totalPacks: null
 }
@@ -18,6 +19,7 @@ type TableTypeInit = {
     edditRows: TableRowType[] | []
     searchTotal: string
     searchStatus: string
+    searchPosition: string
     status: RequestStatusType
     totalPacks: number | null
 }
@@ -31,6 +33,7 @@ export enum ActionType {
     EDIT_VALUE_ROW = 'EDIT_VALUE_ROW',
     ADD_SEARCH_STATUS = 'ADD_SEARCH_STATUS',
     ADD_SEARCH_TOTAL = 'ADD_SEARCH_TOTAL',
+    ADD_SEARCH_POSITION = 'ADD_SEARCH_POSITION',
     FETCH_CANDIDATES_PACK = 'FETCH_CANDIDATES_PACK',
     SET_FETCH_STATUS = 'SET_FETCH_STATUS',
     SET_TOTAL_COUNT = 'SET_TOTAL_COUNT',
@@ -46,6 +49,7 @@ export type tableActionsType = ReturnType<typeof editTable> | ReturnType<typeof 
     | ReturnType<typeof fetchCandidatesPack>
     | ReturnType<typeof setStatus>
     | ReturnType<typeof setTotalCount>
+    | ReturnType<typeof addSearchPosition>
 
 
 export const TableReducer = (state: TableTypeInit = initialState, action: tableActionsType): TableTypeInit => {
@@ -76,6 +80,8 @@ export const TableReducer = (state: TableTypeInit = initialState, action: tableA
             return {...state, status: action.status}
         case ActionType.SET_TOTAL_COUNT:
             return {...state, totalPacks: action.totalCount}
+        case ActionType.ADD_SEARCH_POSITION:
+            return {...state, searchPosition: action.value}
         default:
             return state
 
@@ -94,6 +100,7 @@ export const editRecommendationValue = (value: string, id:string) => {
 }
 export const addSearchStatus = (value: string) => ({type: ActionType.ADD_SEARCH_STATUS,value} as const)
 export const addSearchTotal = (value: string) => ({type: ActionType.ADD_SEARCH_TOTAL,value} as const)
+export const addSearchPosition = (value: string) => ({type: ActionType.ADD_SEARCH_POSITION,value} as const)
 const fetchCandidatesPack = (candidatesPack:TableRowType[]) => ({type:ActionType.FETCH_CANDIDATES_PACK, candidatesPack} as const)
 const setStatus = (status:RequestStatusType) => ({type:ActionType.SET_FETCH_STATUS, status} as const)
 const setTotalCount= (totalCount:number) => ({type:ActionType.SET_TOTAL_COUNT, totalCount} as const)
@@ -105,8 +112,9 @@ export const getPacksThunk = (user_id: string, ): AppThunk  => async (dispatch,g
     const packName = ''
     const searchStatus = getState().tableRows.searchStatus
     const searchTotal = getState().tableRows.searchTotal
+    const searchPosition = getState().tableRows.searchPosition
     try {
-        const res =await ApiCandidatePack.getCandidatesPack(user_id, packName, searchStatus, searchTotal)
+        const res =await ApiCandidatePack.getCandidatesPack(user_id, packName, searchStatus, searchTotal, searchPosition)
         dispatch(fetchCandidatesPack(res.data.candidatesPacks))
         dispatch(setTotalCount(res.data.totalPacks))
         dispatch(setStatus(StatusFetchEnum.OK))

@@ -1,48 +1,39 @@
 import React, {useState} from 'react';
-import {useSelector} from "react-redux";
-import {getRowArray} from "../../utils/selectors";
-import {Button, TextField} from "@material-ui/core";
+import {useDispatch, useSelector} from "react-redux";
+import {getStatistic} from "../../utils/selectors";
+import StatisticOneTable from "./StatisticOneTable";
+import {Button} from "@material-ui/core";
+import cls from './Statistic.module.scss'
+import {addNewStatisticTable} from "../../store/statisticReducer/statisticReducer";
+
 
 const Statistic = () => {
-    const rows = useSelector(getRowArray)
-    const [start, setStart] = useState<string>('');
-    const [finish, setFinish] = useState<string>('');
-    const changeHandlerStart = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setStart(e.currentTarget.value)
+    const statisticArray = useSelector(getStatistic)
+    const dispatch = useDispatch()
+    const onClickHandler = () => {
+        dispatch(addNewStatisticTable())
     }
-    const changeHandlerFinish= (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setFinish(e.currentTarget.value)
-    }
-    const filterHandler = () => {
-        const ffilter = rows.filter(el => el.date <= finish && el.date >= start)
-        console.log(ffilter)
-    }
-    console.log(rows)
+
+
     return (
-        <div>
-            <TextField
-                id="date"
-                label="Birthday"
-                type="date"
-                defaultValue={start}
-                onChange={event => changeHandlerStart(event)}
-                InputLabelProps={{
-                    shrink: true,
-                }}
-            />
-            <TextField
-                id="date"
-                label="Birthday"
-                type="date"
-                defaultValue={finish}
-                onChange={event => changeHandlerFinish(event)}
-                InputLabelProps={{
-                    shrink: true,
-                }}
-            />
-            <Button onClick={filterHandler}>CLISJK</Button>
+        <div className={cls.main}>
+            <h1>Статистика</h1>
+            <div className={cls.title}>
+
+                <Button variant="contained" color="primary" onClick={onClickHandler}>Добавить период</Button>
+            </div>
+            <div className={cls.content}>
+                {statisticArray  && statisticArray.length > 0
+                    ? statisticArray.map((el) => {
+                        return (
+                            <StatisticOneTable key={el.id} id={el.id} rowsStatist={el.rowStatist}/>
+                        )
+                    })
+                    : <div>Статистика пуста добавьте период</div>
+                }
+            </div>
         </div>
     );
-};
+}
 
 export default Statistic;

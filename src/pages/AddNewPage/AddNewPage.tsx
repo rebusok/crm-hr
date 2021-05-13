@@ -1,5 +1,12 @@
 import React from 'react';
-import {StatusEnum, StatusType, TotalEnum, TotalType} from "../../store/TableReducer/TableType";
+import {
+    PositionEnum,
+    PositionType,
+    StatusEnum,
+    StatusType,
+    TotalEnum,
+    TotalType
+} from "../../store/TableReducer/TableType";
 import {useFormik} from "formik";
 import RenderFormik from "../../components/RenderFormik";
 import {setTime, setYear} from "../../helper/helper";
@@ -14,7 +21,7 @@ const AddNewPage = () => {
             time: '',
             name: '',
             meeting: false,
-            position: '',
+            position: PositionEnum.KARATIST as PositionType,
             status: StatusEnum.THINK as StatusType,
             recommendation: '',
             leaderInterview: false,
@@ -24,10 +31,9 @@ const AddNewPage = () => {
         },
         onSubmit: (values) => {
             console.log(values)
-            const currentTime = values.date === '' ? '' : setTime(values.date, values.time)
             const currentSS = setYear(values.SS)
             const newObject = {
-                date: currentTime,
+                date: '',
                 name: values.name,
                 meeting: values.meeting,
                 total: values.total,
@@ -43,17 +49,7 @@ const AddNewPage = () => {
 
             formik.resetForm();
         },
-        // validate: (values) => {
-        //     const errors: ErrorType = {};
-        //
-        //     if (!values.email) {
-        //         errors.email = 'Required';
-        //     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-        //         errors.email = 'Invalid email address';
-        //     }
-        //
-        //     return errors;
-        // }
+
     });
     return (
         <RenderFormik title={'Добавить'} {...formik} />

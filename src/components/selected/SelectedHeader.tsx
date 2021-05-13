@@ -5,9 +5,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import style from './SelectedHeader.module.scss'
-import {StatusEnum, StatusType, TotalEnum, TotalType} from "../../store/TableReducer/TableType";
+import {PositionType, StatusEnum, StatusType, TotalEnum, TotalType} from "../../store/TableReducer/TableType";
 import {useDispatch} from "react-redux";
-import {addSearchStatus, addSearchTotal} from "../../store/TableReducer/TableReducer";
+import {addSearchPosition, addSearchStatus, addSearchTotal} from "../../store/TableReducer/TableReducer";
 import {Button} from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SelectedHeaderProps {
     filtered: boolean,
-    optionsArray: StatusEnum[] | TotalEnum[];
+    optionsArray: StatusEnum[] | TotalEnum[] | PositionType[];
     id:string
     setCloseFilteredIcon: (el: boolean) => void
 }
@@ -39,9 +39,10 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, id, se
     const dispath= useDispatch();
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
 
-        if(id === 'status') dispath(addSearchStatus(event.target.value as StatusType |  TotalType))
-        else dispath(addSearchTotal(event.target.value as StatusType |  TotalType))
-        setValue(event.target.value as StatusType |  TotalType | '')
+        if(id === 'status') dispath(addSearchStatus(event.target.value as StatusType |  TotalType |PositionType))
+        else if(id === 'total')dispath(addSearchTotal(event.target.value as StatusType |  TotalType |PositionType))
+        else dispath(addSearchPosition(event.target.value as StatusType |  TotalType |PositionType))
+        setValue(event.target.value as StatusType |  TotalType | PositionType | '')
         setCloseFilteredIcon(false);
     };
 
@@ -54,7 +55,8 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, id, se
     };
     const resetFilter =  () => {
         if(id === 'status') dispath(addSearchStatus(''))
-        else dispath(addSearchTotal(''))
+        else if(id === 'total') dispath(addSearchTotal(''))
+        else dispath(addSearchPosition(''))
         setCloseFilteredIcon(false);
         setValue('')
     }
@@ -74,7 +76,7 @@ const  SelectedHeader:FC<SelectedHeaderProps> = ({filtered, optionsArray, id, se
                     onChange={handleChange}
                 >
                     {
-                        optionsArray && optionsArray.map((el:StatusType |  TotalType, index:number) => {
+                        optionsArray && optionsArray.map((el:StatusType |  TotalType | PositionType, index:number) => {
                             return (
                                 <MenuItem key={el + index} value={el}>{el}</MenuItem>
                             )

@@ -7,6 +7,7 @@ import {composeWithDevTools} from "redux-devtools-extension";
 import {tableActionsType, TableReducer} from "./TableReducer/TableReducer";
 import AuthReducer, {AuthType} from "./AuthReducer/AuthReducer";
 import ProfileReducer, {ActionProfileType} from "./AuthReducer/ProfileReducer";
+import {statisticActionType, StatisticReducer} from "./statisticReducer/statisticReducer";
 
 
 
@@ -14,7 +15,8 @@ const reducer = combineReducers({
     app: AppReducer,
     tableRows: TableReducer,
     auth: AuthReducer,
-    profile: ProfileReducer
+    profile: ProfileReducer,
+    statistic:StatisticReducer
 })
 
 const middleware = applyMiddleware(thunkMiddleware)
@@ -26,7 +28,7 @@ export const store = createStore(reducer, composeWithDevTools(middleware));
 
 
 export type AppRootStateType = ReturnType<typeof reducer>
-export type AppActionType = AppType | tableActionsType | AuthType | ActionProfileType
+export type AppActionType = AppType | tableActionsType | AuthType | ActionProfileType | statisticActionType
 
 
 

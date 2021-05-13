@@ -6,7 +6,7 @@ import Routes from "../../../routes/Routes";
 
 
 const Layout = () => {
-    const [menu, setMenu] = useState(true)
+    const [menu, setMenu] = useState(false)
     const toggleMenuHandler = () => {
         setMenu(!menu)
     }
