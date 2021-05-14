@@ -1,8 +1,8 @@
 import React, {FC} from 'react';
-import {tableStattistic} from "../../store/statisticReducer/statisticReducer";
 import {
-    Box, Button,
-    Collapse, IconButton,
+    Box,
+    Button,
+    Collapse,
     Table,
     TableBody,
     TableCell,
@@ -11,18 +11,18 @@ import {
     TableRow,
     Typography
 } from "@material-ui/core";
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import Paper from '@material-ui/core/Paper';
 import {PositionEnum, PositionType, TableRowType} from "../../store/TableReducer/TableType";
 import Row from "./Row";
+
 interface PropsType {
     rowsStatist: TableRowType []
 }
-const createDate = (positionArray: PositionType[], rows:TableRowType []) => {
-    return  positionArray.map(el => {
+
+const createDate = (positionArray: PositionType[], rows: TableRowType []) => {
+    return positionArray.map(el => {
         const filteredArray = rows.filter(row => el === row.position)
-        const no = filteredArray.filter(row => row.status !== 'подошел' ||  row.total !== 'Выход на работу')
+        const no = filteredArray.filter(row => row.status !== 'подошел' || row.total !== 'Выход на работу')
         return {
             position: el,
             totalPosition: filteredArray.length,
@@ -34,7 +34,7 @@ const createDate = (positionArray: PositionType[], rows:TableRowType []) => {
 
 }
 
-type typeDateRows = [
+export type typeDateRows = [
     {
         arrayCandidate: TableRowType []
         no: number
@@ -43,25 +43,24 @@ type typeDateRows = [
         yes: number
     }
 ]
-const finData = (rows: typeDateRows) => {
-   return  rows.map((row, index, array) => {
+const createTotal = (rows: typeDateRows) => {
+    // @ts-ignore
+    return rows.reduce((acc, cur) => {
         return {
-            ...row,
-            mainstatistic: {
-                total:array.reduce((acc, cur) => acc + cur.totalPosition, 0),
-                ok:array.reduce((acc, cur) => acc + cur.yes, 0),
-                no:array.reduce((acc, cur) => acc + cur.no, 0),
-            }
+            totalPosition: acc.totalPosition + cur.totalPosition,
+            yes: acc.yes + cur.yes,
+            no: acc.no + cur.no
         }
     })
 
 }
 
-const MappedStatistic:FC<PropsType> = ({rowsStatist}) => {
+const MappedStatistic: FC<PropsType> = ({rowsStatist}) => {
     const [open, setOpen] = React.useState(false);
-    const optionsArrayPosition= [PositionEnum.KARATIST, PositionEnum.SLESAR, PositionEnum.PRESIDENT, PositionEnum.TRACTORIS]
-    const finDat = finData(createDate(optionsArrayPosition,rowsStatist ) as typeDateRows)
-    console.log(finDat)
+    const optionsArrayPosition = [PositionEnum.KARATIST, PositionEnum.SLESAR, PositionEnum.PRESIDENT, PositionEnum.TRACTORIS]
+    const finDat = createDate(optionsArrayPosition, rowsStatist)
+    const totalPosition = createTotal(finDat as typeDateRows)
+
     return (
         <>
             <Button variant="contained" color="primary" onClick={() => setOpen(!open)}>
@@ -74,22 +73,22 @@ const MappedStatistic:FC<PropsType> = ({rowsStatist}) => {
                         Заголовок
                     </Typography>
                     <TableContainer component={Paper}>
-                        <Table  aria-label="spanning table">
+                        <Table aria-label="spanning table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell colSpan={3}>
 
                                     </TableCell>
-                                    <TableCell align="left" >
+                                    <TableCell align="left">
                                         Details
                                     </TableCell>
-                                    <TableCell align="left" >
+                                    <TableCell align="left">
                                         Details
                                     </TableCell>
                                     <TableCell align="center">Price</TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell></TableCell>
+                                    <TableCell/>
                                     <TableCell>Кандидаты</TableCell>
                                     <TableCell align="right">Всего по должности</TableCell>
                                     <TableCell align="right">Отказ</TableCell>
@@ -100,24 +99,28 @@ const MappedStatistic:FC<PropsType> = ({rowsStatist}) => {
                             <TableBody>
                                 {finDat.map(row => {
                                     return (
-                                        <Row key={row.position}/>
+                                        <Row key={row.position} statisticPosition={row}/>
                                     )
                                 })}
                                 <TableRow>
-                                    <TableCell rowSpan={3} />
-                                    <TableCell rowSpan={3} />
-                                    <TableCell rowSpan={3} />
-                                    <TableCell colSpan={2}>Subtotal</TableCell>
-                                    <TableCell align="center">ЕЩЕЕ ХРЕНЬ</TableCell>
+                                    <TableCell rowSpan={3}/>
+                                    <TableCell colSpan={1}>Всего</TableCell>
+                                    <TableCell align="right">{totalPosition.totalPosition}</TableCell>
+                                    <TableCell align="right">{totalPosition.no}</TableCell>
+                                    <TableCell align="right">{totalPosition.yes}</TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell>ПРОЦЕНТ</TableCell>
-                                    <TableCell align="left">НИЧЕГО</TableCell>
-                                    <TableCell align="center">ПРОЦЦЕНТ</TableCell>
+                                    <TableCell rowSpan={2}/>
+                                    <TableCell rowSpan={1}/>
+                                    <TableCell rowSpan={1}/>
+                                    <TableCell align="right">ПРОЦЕНТ</TableCell>
+
+                                    <TableCell align="right">ПРОЦЦЕНТ</TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell colSpan={2}>ВСЕГО</TableCell>
-                                    <TableCell align="center">ЦИФРАА</TableCell>
+                                    <TableCell colSpan={2}/>
+                                    <TableCell align="right">ЕЩЕ ПРОЦЕНТ</TableCell>
+                                    <TableCell align="right">ЦИФРАА</TableCell>
                                 </TableRow>
                             </TableBody>
                         </Table>

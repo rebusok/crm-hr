@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {
     Box,
     Collapse,
@@ -12,56 +12,67 @@ import {
 } from "@material-ui/core";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import {PositionEnum} from "../../store/TableReducer/TableType";
+import {PositionType, TableRowType} from "../../store/TableReducer/TableType";
 
-const Row = () => {
+
+type PropsTypeArray =
+    {
+        arrayCandidate: TableRowType []
+        no: number
+        position: PositionType
+        totalPosition: number
+        yes: number
+    }
+
+type PropsType = {
+    statisticPosition: PropsTypeArray
+}
+
+const Row:FC<PropsType> = ({statisticPosition}) => {
     const [open, setOpen] = React.useState(false);
-
     return (
         <React.Fragment>
-            <TableRow >
+            <TableRow>
                 <TableCell>
                     <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                        {open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
                     </IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                    Должности
+                    {statisticPosition.position}
                 </TableCell>
-                <TableCell align="right">Всего кандидатов</TableCell>
-                <TableCell align="right">Отказ</TableCell>
-                <TableCell align="right">Вышли</TableCell>
+                <TableCell align="right">{statisticPosition.totalPosition}</TableCell>
+                <TableCell align="right">{statisticPosition.no}</TableCell>
+                <TableCell align="right">{statisticPosition.yes}</TableCell>
                 <TableCell align="right">Процент</TableCell>
             </TableRow>
             <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box margin={1}>
                             <Typography variant="h6" gutterBottom component="div">
-                                History
+                                Подробнее
                             </Typography>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Date</TableCell>
-                                        <TableCell>Customer</TableCell>
-                                        <TableCell align="right">Amount</TableCell>
-                                        <TableCell align="right">Total price ($)</TableCell>
+                                        <TableCell>ФИО</TableCell>
+                                        <TableCell>ИТОГ</TableCell>
+                                        <TableCell align="right">ИТОГ2.0</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {/*{rowsStatist.map((statisticRow) => (*/}
-                                        <TableRow >
-                                            <TableCell component="th" scope="row">
-                                                Чтото тут
-                                            </TableCell>
-                                            <TableCell>ЙДТИ</TableCell>
-                                            <TableCell align="right">ХРЕН</TableCell>
-                                            <TableCell align="right">
-                                                чтото там
-                                            </TableCell>
-                                        </TableRow>
-                                    {/*))}*/}
+                                    {statisticPosition.arrayCandidate.map(row => {
+                                        return (
+                                            <TableRow key={row._id}>
+                                                <TableCell component="th" scope="row">
+                                                    {row.name}
+                                                </TableCell>
+                                                <TableCell>{row.status}</TableCell>
+                                                <TableCell align="right">{row.total}</TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
                                 </TableBody>
                             </Table>
                         </Box>
