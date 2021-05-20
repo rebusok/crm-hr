@@ -44,13 +44,22 @@ export interface candidatePackUpdate {
     name?: string
     _id?: string
     position?: string
-    status?: StatusType
+    status?: StatusType | ''
     recommendation?: string
     leaderInterview?: boolean
     date?: string
+    phone?: string
     SS?: string | null
-    total?: TotalType
+    total?: TotalType | ''
     meeting?: boolean
 }
 
+export interface candidatePacKAdd {
+    date: string,
+    name: string
+    time: string
+    position: string
+    phone: string
+
+}
 

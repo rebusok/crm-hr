@@ -34,7 +34,7 @@ const AuthReducer = (state: stateProps = initialState, action: AuthType): stateP
     return state
 }
 export const setLoginAC = (isLogin: boolean) => ({type: ActionType.SET_LOGIN, payload: {isLogin}})
-export const setStatusAC = (status: RequestStatusType) => ({type: ActionType.SET_LOGIN, payload: {status}})
+export const setStatusAC = (status: RequestStatusType) => ({type: ActionType.SET_STATUS, payload: {status}})
 
 export const setErrorMes = (errorMes: string) => ({type: ActionType.SET_ERROR_MES, payload: {errorMes}})
 

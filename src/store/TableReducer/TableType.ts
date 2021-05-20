@@ -9,13 +9,14 @@ export type TableRowType = {
     SS: string | null,
     created: string
     date: string,
-    leaderInterview: boolean ,
+    leaderInterview: boolean | null,
     more_id: string
     name: string,
     path:string
     recommendation: string,
-    status:StatusType,
-    total: TotalType,
+    status:StatusType | '',
+    total: TotalType | '',
+    phone: string
     type: string
     updated:string
     user_id:string

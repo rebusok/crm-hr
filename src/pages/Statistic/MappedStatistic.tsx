@@ -1,33 +1,32 @@
 import React, {FC} from 'react';
-import {
-    Box,
-    Button,
-    Collapse,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography
-} from "@material-ui/core";
+import {Box, Button, Collapse, Typography} from "@material-ui/core";
 import Paper from '@material-ui/core/Paper';
 import {PositionEnum, PositionType, TableRowType} from "../../store/TableReducer/TableType";
 import Row from "./Row";
+import cls from './MappedStatistic.module.scss'
+
 
 interface PropsType {
     rowsStatist: TableRowType []
+    budget: number
 }
 
 const createDate = (positionArray: PositionType[], rows: TableRowType []) => {
     return positionArray.map(el => {
         const filteredArray = rows.filter(row => el === row.position)
-        const no = filteredArray.filter(row => row.status !== 'подошел' || row.total !== 'Выход на работу')
+        const totalComing = filteredArray.filter(row => row.meeting)
+        const totalSucsesStatus = totalComing.filter(row =>  row.status !== 'отказ')
+        const totalSucsesTotal = totalSucsesStatus.filter(row => row.total === 'Выход на работу' || row.total === 'Стажировка')
+        const totalCommingJob = totalSucsesTotal.filter(row => row.total === 'Выход на работу')
+
+
         return {
             position: el,
             totalPosition: filteredArray.length,
-            no: no.length,
-            yes: filteredArray.length - no.length,
+            totalComming: totalComing.length,
+            totalSucsesStatus: totalSucsesStatus.length,
+            totalSucsesTotal: totalSucsesTotal.length,
+            totalCommingJob: totalCommingJob.length,
             arrayCandidate: filteredArray
         }
     })
@@ -55,11 +54,12 @@ const createTotal = (rows: typeDateRows) => {
 
 }
 
-const MappedStatistic: FC<PropsType> = ({rowsStatist}) => {
+const MappedStatistic: FC<PropsType> = ({rowsStatist, budget}) => {
     const [open, setOpen] = React.useState(false);
     const optionsArrayPosition = [PositionEnum.KARATIST, PositionEnum.SLESAR, PositionEnum.PRESIDENT, PositionEnum.TRACTORIS]
     const finDat = createDate(optionsArrayPosition, rowsStatist)
-    const totalPosition = createTotal(finDat as typeDateRows)
+    console.log(finDat)
+    // const totalPosition = createTotal(finDat as typeDateRows)
 
     return (
         <>
@@ -70,61 +70,20 @@ const MappedStatistic: FC<PropsType> = ({rowsStatist}) => {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <Box margin={1}>
                     <Typography variant="h6" gutterBottom component="div">
-                        Заголовок
+                        Статистика с дата до дата
                     </Typography>
-                    <TableContainer component={Paper}>
-                        <Table aria-label="spanning table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell colSpan={3}>
-
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Details
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Details
-                                    </TableCell>
-                                    <TableCell align="center">Price</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell/>
-                                    <TableCell>Кандидаты</TableCell>
-                                    <TableCell align="right">Всего по должности</TableCell>
-                                    <TableCell align="right">Отказ</TableCell>
-                                    <TableCell align="right">Вышли</TableCell>
-                                    <TableCell align="right">Процент</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {finDat.map(row => {
-                                    return (
-                                        <Row key={row.position} statisticPosition={row}/>
-                                    )
-                                })}
-                                <TableRow>
-                                    <TableCell rowSpan={3}/>
-                                    <TableCell colSpan={1}>Всего</TableCell>
-                                    <TableCell align="right">{totalPosition.totalPosition}</TableCell>
-                                    <TableCell align="right">{totalPosition.no}</TableCell>
-                                    <TableCell align="right">{totalPosition.yes}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell rowSpan={2}/>
-                                    <TableCell rowSpan={1}/>
-                                    <TableCell rowSpan={1}/>
-                                    <TableCell align="right">ПРОЦЕНТ</TableCell>
-
-                                    <TableCell align="right">ПРОЦЦЕНТ</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell colSpan={2}/>
-                                    <TableCell align="right">ЕЩЕ ПРОЦЕНТ</TableCell>
-                                    <TableCell align="right">ЦИФРАА</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <Paper>
+                        <div className={cls.wrappItem}>
+                            {finDat.map(row => {
+                                return (
+                                    <Row key={row.position} statisticPosition={row}/>
+                                )
+                            })}
+                        </div>
+                        <div>
+                            ВСЕЕГО
+                        </div>
+                    </Paper>
                 </Box>
             </Collapse>
 

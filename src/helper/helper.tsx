@@ -204,6 +204,7 @@ export const smartSorting = (rows: TableRowType[], typeSorting: string, sortByVa
 
 export const changeFinDate = (date:string) => {
     const newDate = new Date(Date.parse(date)).setHours(23, 59, 59)
+
     return  new Date(newDate).toISOString()
 }
 export const changeStartDate = (date:string) => {

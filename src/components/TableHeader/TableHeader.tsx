@@ -11,6 +11,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import FilteredHeader from "./FilteredHeader";
 import {useSelector} from "react-redux";
 import {AppRootStateType} from "../../store/store";
+import {optionsArrayPosition, optionsArrayStatus, optionsArrayTotal} from "../../utils/ConstOptions";
 
 interface EnhancedTableProps {
     classes?: ReturnType<typeof useStyles>;
@@ -25,9 +26,7 @@ interface EnhancedTableProps {
 
 function TableHeader(props: EnhancedTableProps) {
     const {onRequestSort } = props;
-    const optionsArrayStatus = [StatusEnum.OK, StatusEnum.NO, StatusEnum.THINK]
-    const optionsArrayTotal = [TotalEnum.OFER, TotalEnum.CANSEL, TotalEnum.CANSEL_LID, TotalEnum.TRANING]
-    const optionsArrayPosition= [PositionEnum.KARATIST, PositionEnum.SLESAR, PositionEnum.PRESIDENT, PositionEnum.TRACTORIS]
+
     const {disabledBtn} = useSelector((state: AppRootStateType) => state.app)
 
 

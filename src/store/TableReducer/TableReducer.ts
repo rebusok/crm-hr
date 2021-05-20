@@ -1,7 +1,7 @@
 import {RequestStatusType, StatusFetchEnum, TableRowType} from './TableType'
 import {rows} from "../../data";
 import {AppThunk} from "../store";
-import {ApiCandidatePack, candidatePackUpdate} from "../../Api/Api";
+import {ApiCandidatePack, candidatePacKAdd, candidatePackUpdate} from "../../Api/Api";
 import {setDisabledBtn} from "../appReducer/AppReducer";
 import {HelperErrorCatch} from "../../helper/error-handler";
 
@@ -114,7 +114,9 @@ export const getPacksThunk = (user_id: string, ): AppThunk  => async (dispatch,g
     const searchTotal = getState().tableRows.searchTotal
     const searchPosition = getState().tableRows.searchPosition
     try {
+
         const res =await ApiCandidatePack.getCandidatesPack(user_id, packName, searchStatus, searchTotal, searchPosition)
+        console.log(res)
         dispatch(fetchCandidatesPack(res.data.candidatesPacks))
         dispatch(setTotalCount(res.data.totalPacks))
         dispatch(setStatus(StatusFetchEnum.OK))
@@ -142,7 +144,7 @@ export const updatePack = (candidatePack:candidatePackUpdate): AppThunk =>  asyn
     }
 }
 
-export const addNewCandidate = (candidatePack:candidatePackUpdate): AppThunk =>  async (dispatch, getState) => {
+export const addNewCandidate = (candidatePack:candidatePacKAdd): AppThunk =>  async (dispatch, getState) => {
     dispatch(setStatus(StatusFetchEnum.LOADING))
     dispatch(setDisabledBtn(true))
     const userId = getState().profile.profile?._id

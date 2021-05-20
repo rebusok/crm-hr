@@ -4,24 +4,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import {StatusEnum, StatusType, TotalEnum, TotalType} from "../../store/TableReducer/TableType";
 
-const candidatesPack = {
-    name: 'ПИАНИСТ',
-    status: StatusEnum.OK,
-    recommendation: 'some Test',
-    leaderInterview: true,
-    total: TotalEnum.CANSEL,
-    position: 'ПИАНИСТ',
-    meeting: true
-}
-const candidatePack = {
-    _id: "6091761bd324ca0e344fca94",
-    SS: new Date().toISOString(),
-    leaderInterview: true,
-    name: "ПЕТРО",
-    recommendation: "ПОМЕНЯЛ",
-    status: "отказ" as StatusType,
-    total:"Отказ-руководителя" as TotalType,
-}
+
 const user_id = '60914ab8a9c7250c8cfbb0ae'
 // const packName = 'Юрий'
 // const searchStatus = 'думает'
@@ -79,9 +62,7 @@ const Registration = () => {
     const handleChange2 = (event: React.ChangeEvent<{ value: unknown }>) => {
         setOptionsHeadStatus2(event.target.value as TotalType );
     };
-    const updateHandler = () => {
-        ApiCandidatePack.updateCandidatesPack(candidatePack).then(res =>  console.log(res))
-    }
+
     return (
         <div>
             <input type="text" value={login} placeholder={'login'} onChange={e => loginHandler(e)}/>
@@ -135,7 +116,7 @@ const Registration = () => {
 
             <div>
                 <h1>UPDATE</h1>
-                <button onClick={updateHandler}>UPDAATE</button>
+
             </div>
         </div>
 

@@ -17,6 +17,7 @@ const StatisticOneTable: FC<PropsType> = ({id, rowsStatist}) => {
     const [start, setStart] = useState<string>('');
     const [finish, setFinish] = useState<string>('');
     const [first, setFirst] = useState<boolean>(true)
+    const [budget, setBudget] = useState<number>(0)
     const rows = useSelector(getRowArray)
     const dispatch = useDispatch()
     const stableDispatch = useCallback(dispatch, [dispatch])
@@ -32,6 +33,9 @@ const StatisticOneTable: FC<PropsType> = ({id, rowsStatist}) => {
         const ffilter = rows.filter(el => el.date <= finish && el.date >= start)
         dispatch(setFiler(ffilter, id))
         setFirst(false)
+    }
+    const changeHandlerBudget= (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setBudget(+e.currentTarget.value)
     }
     useEffect(() => {
         if(isLogin && profile && rows.length === 0)stableDispatch(getPacksThunk(profile._id))
@@ -61,11 +65,21 @@ const StatisticOneTable: FC<PropsType> = ({id, rowsStatist}) => {
                         shrink: true,
                     }}
                 />
+                <TextField
+                    id="budget"
+                    label="Бюджет"
+                    type="number"
+                    defaultValue={budget}
+                    onChange={event => changeHandlerBudget(event)}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                />
                 <Button onClick={filterHandler}>Сформировать</Button>
             </div>
             <div>
                 {rowsStatist && rowsStatist.length > 0
-                    ? <MappedStatistic rowsStatist={rowsStatist}/>
+                    ? <MappedStatistic rowsStatist={rowsStatist} budget={budget}/>
                     : first
                         ? null
                         : <h2>За выбранный период нет данных</h2>

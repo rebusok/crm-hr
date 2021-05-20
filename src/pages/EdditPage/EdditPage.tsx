@@ -16,6 +16,7 @@ const EditPage = () => {
             {rows.length > 0? rows.map((row:TableRowType) => {
                 return (
                     <FormikEditOne row={row} key={row._id}/>
+
                 )
             }) :  <h1>EMPTY</h1>}
         </div>

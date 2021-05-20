@@ -6,6 +6,7 @@ export const headCells: HeadCellsType[] = [
     {id: 'time', numeric: true, label: 'Время', sorting: false, typeSorting: SortEnum.DATE,},
     {id: 'position', numeric: false, label: 'Должность', sorting: false, typeSorting: SortEnum.STRING,},
     {id: 'name', numeric: false, label: 'ФИО', sorting: false, typeSorting: SortEnum.STRING,},
+    {id: 'phone', numeric: false, label: 'Телефон', sorting: false, typeSorting: SortEnum.STRING,},
     {id: 'meeting', numeric: false, label: 'Встреча', sorting: false, typeSorting: SortEnum.BOOLEAN,},
     {id: 'status', numeric: false, label: 'Итог', sorting: false, typeSorting: SortEnum.STRING,},
     {id: 'recommendation', numeric: false, label: 'Рекомендации', sorting: false, typeSorting: SortEnum.STRING,},

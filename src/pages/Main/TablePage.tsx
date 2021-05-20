@@ -8,10 +8,17 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {Box, Checkbox, CircularProgress, TextField} from "@material-ui/core";
+import {Box, Checkbox, CircularProgress, createMuiTheme, IconButton, TextField} from "@material-ui/core";
 import EnhancedTableToolbar from "./EnhancedTableToolbar ";
 import style from './TablePage.module.scss'
-import {Order, OrderEnum, SortEnum, StatusFetchEnum, TableRowType} from '../../store/TableReducer/TableType';
+import {
+    Order,
+    OrderEnum,
+    SortEnum,
+    StatusFetchEnum,
+    StatusType,
+    TableRowType, TotalType
+} from '../../store/TableReducer/TableType';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../../store/store";
 import EditableSpanText from "../../components/EditableSpanText/EditableSpanText";
@@ -21,12 +28,29 @@ import {currentDate, currentyTime, setYear, smartSorting} from "../../helper/hel
 import {editRecommendationValue, getPacksThunk, updatePack} from "../../store/TableReducer/TableReducer";
 import {Redirect} from 'react-router-dom';
 import {RoutingType} from "../../routes/Routes";
+import { ThemeProvider } from '@material-ui/core';
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import EditableStatusTotal from "../../components/EditableSpanText/EditableStatusTotal";
+import {optionsArrayStatus, optionsArrayTotal} from "../../utils/ConstOptions";
+
+
+const theme = createMuiTheme({
+    overrides: {
+        MuiTableCell: {
+            root: {
+                padding: '10px'
+            }
+        }
+    }
+});
 
 
 const useStyles2 = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             width: '100%',
+            padding: '10px'
         },
         paper: {
             width: '100%',
@@ -60,6 +84,8 @@ const TablePage = () => {
     const [typeSort, setTypeSort] = React.useState<string>('string');
     const [searchName, setSearchName] = useState<string>('')
     const [currentsearchName, setCurrentSearchName] = useState<string>('')
+    const [open, setOpen] = useState<boolean>(false)
+    const [openTotal, setOpenTotal] = useState<boolean>(false)
 
     const {
         status,
@@ -150,127 +176,150 @@ const TablePage = () => {
         console.log(recommendation, id)
         dispatch(editRecommendationValue(recommendation, id))
     }
+    const changeInputStatus = (value:string, _id:string) => {
+        const status = value as StatusType
+        dispatch(updatePack({status, _id}))
+    }
+    const changeInputTotal = (value:string, _id:string) => {
+        const total = value as TotalType
+        dispatch(updatePack({total, _id}))
+    }
+
+
 
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
     return (
         <Box margin={1}>
             <Paper>
-                <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected}
-                                      setCurrentSearchName={setCurrentSearchName}/>
-                <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="custom pagination table">
-                        <TableHeader
-                            onSelectAllClick={handleSelectAllClick}
-                            rowCount={rows.length}
-                            numSelected={selected.length}
-                            onRequestSort={testSotr}
-                            classes={classes}
-                            order={order}
+                <ThemeProvider theme={theme}>
+                    <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected}
+                                          setCurrentSearchName={setCurrentSearchName}/>
+                    <TableContainer component={Paper}>
+                        <Table className={classes.table} aria-label="custom pagination table">
+                            <TableHeader
+                                onSelectAllClick={handleSelectAllClick}
+                                rowCount={rows.length}
+                                numSelected={selected.length}
+                                onRequestSort={testSotr}
+                                classes={classes}
+                                order={order}
 
-                        />
-                        {status === StatusFetchEnum.LOADING ?
-                            <TableBody>
+                            />
+                            {status === StatusFetchEnum.LOADING ?
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell style={{width: 100}}>
+                                            <div className={style.divSpinner}><CircularProgress/></div>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                                : <TableBody>
+                                    {(rowsPerPage > 0
+                                            ? smartSorting(filteredByName, typeSort, order, orderBy).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            : smartSorting(filteredByName, typeSort, order, orderBy)
+                                    ).map((row, index) => {
+                                            const isItemSelected = isSelected(row._id);
+
+                                            const labelId = `enhanced-table-checkbox-${index}`;
+                                            return (
+
+                                                <TableRow key={row._id}
+                                                          tabIndex={-1}
+                                                          role="checkbox"
+                                                          hover
+                                                          selected={isItemSelected}
+
+                                                >
+                                                    <TableCell padding="checkbox">
+                                                        <Checkbox
+                                                            checked={isItemSelected}
+                                                            disabled={disabledBtn}
+                                                            inputProps={{'aria-labelledby': labelId}}
+                                                            onClick={(event) => handleClick(event, row._id)}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell style={{width: 100}} component="th" scope="row" id={labelId}
+                                                               align="center">
+                                                        {currentDate.format(new Date(row.date))}
+                                                    </TableCell>
+                                                    <TableCell style={{width: 60}} align="center">
+                                                        {row.time}
+                                                    </TableCell>
+                                                    <TableCell style={{width: 80}} align="center">
+                                                        {row.position}
+                                                    </TableCell>
+                                                    <TableCell style={{width: 160}} align="center">
+                                                        {row.name}
+                                                    </TableCell>
+                                                    <TableCell style={{width: 160}} align="center">
+                                                        {row.phone}
+                                                    </TableCell>
+                                                    <TableCell style={{width: 100}} align="center">
+                                                        {row.meeting === null ? null : row.meeting ? <span>yes</span> :
+                                                            <span>No</span>}
+                                                    </TableCell>
+                                                    <TableCell style={{width: 120}} align="center">
+                                                        {open? <EditableStatusTotal id={row._id} setClose={setOpen} optionsArray={optionsArrayStatus} onChanges={changeInputStatus}/> : row.status}
+                                                        <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                                                            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                                        </IconButton>
+                                                    </TableCell>
+                                                    <TableCell style={{width: 160}} align="left">
+                                                        <EditableSpanText
+                                                            value={row.recommendation}
+                                                            idRow={row._id}
+                                                            blured={true}
+                                                            onChanges={changeInputRecHandler}
+                                                            typeSpan={SortEnum.STRING}
+                                                        />
+
+                                                    </TableCell>
+                                                    <TableCell style={{width: 100}} align="center">
+                                                        {row.leaderInterview === null ? null : row.leaderInterview ?
+                                                            <span>yes</span> : <span>No</span>}
+                                                    </TableCell>
+                                                    <TableCell style={{width: 100}} align="center">
+                                                        {openTotal? <EditableStatusTotal id={row._id} setClose={setOpenTotal} optionsArray={optionsArrayTotal} onChanges={changeInputTotal}/> : row.total}
+                                                        <IconButton aria-label="expand row" size="small" onClick={() => setOpenTotal(!openTotal)}>
+                                                            {openTotal ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                                        </IconButton>
+                                                    </TableCell>
+                                                    <TableCell style={{width: 100}} align="center">
+                                                        <EditableSpanText
+                                                            value={row.SS ? row.SS.slice(0, 10).split('-').join('.') : ''}
+                                                            blured={true}
+                                                            onChanges={changeInputSsHandler}
+                                                            idRow={row._id}
+                                                            typeSpan={SortEnum.DATE}
+                                                        />
+
+                                                    </TableCell>
+
+                                                </TableRow>
+                                            )
+                                        }
+                                    )}
+
+                                </TableBody>
+                            }
+
+                            <TableFooter>
                                 <TableRow>
-                                    <TableCell style={{width: 100}}>
-                                        <div className={style.divSpinner}><CircularProgress/></div>
-                                    </TableCell>
+                                    <TablePagination
+                                        rowsPerPageOptions={[5, 10, 25, {label: 'All', value: -1}]}
+                                        colSpan={9}
+                                        count={rows.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onChangePage={handleChangePage}
+                                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                                        ActionsComponent={TablePaginationActions}
+                                    />
                                 </TableRow>
-                            </TableBody>
-                            : <TableBody>
-                                {(rowsPerPage > 0
-                                        ? smartSorting(filteredByName, typeSort, order, orderBy).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        : smartSorting(filteredByName, typeSort, order, orderBy)
-                                ).map((row, index) => {
-                                        const isItemSelected = isSelected(row._id);
-
-                                        const labelId = `enhanced-table-checkbox-${index}`;
-                                        return (
-
-                                            <TableRow key={row._id}
-                                                      tabIndex={-1}
-                                                      role="checkbox"
-                                                      hover
-                                                      selected={isItemSelected}
-
-                                            >
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox
-                                                        checked={isItemSelected}
-                                                        disabled={disabledBtn}
-                                                        inputProps={{'aria-labelledby': labelId}}
-                                                        onClick={(event) => handleClick(event, row._id)}
-                                                    />
-                                                </TableCell>
-                                                <TableCell style={{width: 100}} component="th" scope="row" id={labelId}
-                                                           align="center">
-                                                    {currentDate.format(new Date(row.date))}
-                                                </TableCell>
-                                                <TableCell style={{width: 60}} align="center">
-                                                    {currentyTime.format(new Date(row.date))}
-                                                </TableCell>
-                                                <TableCell style={{width: 80}} align="center">
-                                                    {row.position}
-                                                </TableCell>
-                                                <TableCell style={{width: 100}} align="center">
-                                                    {row.name}
-                                                </TableCell>
-                                                <TableCell style={{width: 100}} align="center">
-                                                    {row.meeting ? <span>yes</span> : <span>No</span>}
-                                                </TableCell>
-                                                <TableCell style={{width: 160}} align="center">
-                                                    {row.status}
-                                                </TableCell>
-                                                <TableCell style={{width: 160}} align="left">
-                                                    <EditableSpanText
-                                                        value={row.recommendation}
-                                                        idRow={row._id}
-                                                        blured={true}
-                                                        onChanges={changeInputRecHandler}
-                                                        typeSpan={SortEnum.STRING}
-                                                    />
-
-                                                </TableCell>
-                                                <TableCell style={{width: 100}} align="center">
-                                                    {row.leaderInterview ? <span>yes</span> : <span>No</span>}
-                                                </TableCell>
-                                                <TableCell style={{width: 160}} align="center">
-                                                    {row.total}
-                                                </TableCell>
-                                                <TableCell style={{width: 160}} align="center">
-                                                    <EditableSpanText
-                                                        value={row.SS ? row.SS.slice(0, 10).split('-').join('.') : ''}
-                                                        blured={true}
-                                                        onChanges={changeInputSsHandler}
-                                                        idRow={row._id}
-                                                        typeSpan={SortEnum.DATE}
-                                                    />
-
-                                                </TableCell>
-
-                                            </TableRow>
-                                        )
-                                    }
-                                )}
-
-                            </TableBody>
-                        }
-
-                        <TableFooter>
-                            <TableRow>
-                                <TablePagination
-                                    rowsPerPageOptions={[5, 10, 25, {label: 'All', value: -1}]}
-                                    colSpan={9}
-                                    count={rows.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    onChangePage={handleChangePage}
-                                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                                    ActionsComponent={TablePaginationActions}
-                                />
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </TableContainer>
+                            </TableFooter>
+                        </Table>
+                    </TableContainer>
+                </ThemeProvider>
             </Paper>
         </Box>
     );
