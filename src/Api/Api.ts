@@ -3,9 +3,9 @@ import {StatusType, TotalType} from "../store/TableReducer/TableType";
 
 const configOMB = {
     // localBack
-    // baseURL: "https://crm-back-hr.herokuapp.com/",
+    baseURL: "https://crm-back-hr.herokuapp.com/",
     // heroku
-    baseURL: 'http://localhost:7542/',
+    // baseURL: 'http://localhost:7542/',
     withCredentials: true,
 
 };
