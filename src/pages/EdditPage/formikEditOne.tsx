@@ -1,15 +1,21 @@
 import React, {FC} from 'react';
 import {useFormik} from "formik";
 import {PositionEnum, StatusEnum, StatusFetchEnum, TableRowType, TotalEnum} from "../../store/TableReducer/TableType";
-import {currentDate, currentyTime, setTime, setYear} from "../../helper/helper";
+import {currentDate, setYear} from "../../helper/helper";
 import {useDispatch, useSelector} from "react-redux";
 import {clearEditTable, updatePack} from "../../store/TableReducer/TableReducer";
-import RenderFormik from "../../components/RenderFormik";
 import {AppRootStateType} from "../../store/store";
-import {Button, Checkbox, CircularProgress, FormControl, FormControlLabel, TextField} from "@material-ui/core";
+import {
+    Button,
+    Checkbox,
+    CircularProgress,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    TextField
+} from "@material-ui/core";
 import style from "./FormikEditOne.module.scss";
 import MenuItem from "@material-ui/core/MenuItem";
-import {FormGroup} from '@material-ui/core';
 import InputMask from "react-input-mask";
 
 interface FormikEditOnePropsType {

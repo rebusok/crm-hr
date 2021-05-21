@@ -1,6 +1,6 @@
 import {useStyles} from "@material-ui/x-grid-data-generator/dist/cjs/_modules_/grid/components/containers/GridRootStyles";
 import React from "react";
-import {Order, OrderEnum, PositionEnum, StatusEnum, TotalEnum, TypeSort} from "../../store/TableReducer/TableType";
+import {Order, OrderEnum, TypeSort} from "../../store/TableReducer/TableType";
 import {IconButton, TableHead} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
@@ -82,17 +82,19 @@ function TableHeader(props: EnhancedTableProps) {
                                 ? props.order === OrderEnum.ASC
                                     ? <div>
                                         <IconButton aria-label="delete"
+                                                    size="small"
                                                     disabled={disabledBtn}
                                                     onClick={() => handlerSorting(headCell.typeSorting, OrderEnum.DESK, headCell.id)}>
-                                            <ArrowDownwardIcon fontSize={'small'}/>
+                                            <ArrowDownwardIcon fontSize="inherit"/>
                                         </IconButton>
 
                                     </div>
                                     : <div>
                                         <IconButton aria-label="delete"
+                                                    size="small"
                                                     disabled={disabledBtn}
                                                     onClick={() => handlerSorting(headCell.typeSorting, OrderEnum.ASC, headCell.id)}>
-                                            <ArrowUpwardIcon fontSize={'small'}/>
+                                            <ArrowUpwardIcon fontSize="inherit"/>
                                         </IconButton>
                                     </div>
                                 : null

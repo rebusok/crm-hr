@@ -1,17 +1,29 @@
-import React from 'react';
-import {PositionEnum, PositionType} from "../../store/TableReducer/TableType";
+import React, {useState} from 'react';
+import {PositionEnum, PositionType, StatusFetchEnum} from "../../store/TableReducer/TableType";
 import {useFormik} from "formik";
 import {addNewCandidate} from "../../store/TableReducer/TableReducer";
-import {useDispatch} from "react-redux";
-import {Button, FormControl, TextField} from "@material-ui/core";
+import {useDispatch, useSelector} from "react-redux";
+import {Button, CircularProgress, FormControl, TextField} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputMask from "react-input-mask";
 import {FormGroup} from '@material-ui/core';
 import cls from './AddNewPage.module.scss'
+import {AppRootStateType} from "../../store/store";
+import SnackbarRoot from "../../components/SnackbarRoot/SnackbarRoot";
 
 
 const AddNewPage = () => {
     const dispatch = useDispatch();
+    const {status} = useSelector((state:AppRootStateType) => state.auth)
+    const [first, setFist] = useState<boolean>(true)
+    const [open, setOpen] = useState(false);
+    const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
     type FormikErrorType = {
         name?: string
         surname?: string
@@ -48,14 +60,21 @@ const AddNewPage = () => {
             }
 
             dispatch(addNewCandidate(newObject))
-
+            setFist(false)
+            setOpen(true)
             formik.resetForm();
         },
 
     });
     return (
         <div className={cls.container}>
+
             <form onSubmit={formik.handleSubmit}>
+                {!first && status === StatusFetchEnum.OK
+                    ? <SnackbarRoot open={open} handleClose={handleClose} />
+                    : null
+                }
+
                 <FormControl>
                     <FormGroup>
                         <TextField
@@ -101,6 +120,7 @@ const AddNewPage = () => {
                         <TextField required label="ФИО" {...formik.getFieldProps('name')}/>
                         <InputMask
                             mask="+7(999) 999-99-99"
+                            required
                             disabled={false}
                             {...formik.getFieldProps('phone')}
                         >
@@ -111,9 +131,10 @@ const AddNewPage = () => {
                         {formik.touched &&
                         formik.errors.phone ? <div style={{color: 'red'}}>{formik.errors.phone}</div> : null}
                     </FormGroup>
-                    <Button type={'submit'} variant={'contained'} color={'primary'}>Добавить</Button>
+                    <Button type={'submit'} variant={'contained'} color={'primary'} className={cls.btn}>Добавить</Button>
                 </FormControl>
             </form>
+            { status === StatusFetchEnum.LOADING?  <CircularProgress/> : null}
         </div>
     );
 }

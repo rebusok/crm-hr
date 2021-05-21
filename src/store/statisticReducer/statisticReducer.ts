@@ -15,10 +15,11 @@ const initialState: StatisticTableTypeInit = {
 
 enum ActionType {
     ADD_NEW_STATISTIC_TABLE = 'ADD_NEW_STATISTIC_TABLE',
-    SET_FILER_TABLE = 'SET_FILER_TABLE'
+    SET_FILER_TABLE = 'SET_FILER_TABLE',
+    DELETE_STATISTIC_TABLE = 'DELETE_STATISTIC_TABLE'
 }
 
-export type statisticActionType = ReturnType<typeof addNewStatisticTable> | ReturnType<typeof setFiler>
+export type statisticActionType = ReturnType<typeof addNewStatisticTable> | ReturnType<typeof setFiler>| ReturnType<typeof deleteStatistic>
 
 export const StatisticReducer = (state: StatisticTableTypeInit = initialState, action: statisticActionType) => {
     switch (action.type) {
@@ -43,8 +44,8 @@ export const StatisticReducer = (state: StatisticTableTypeInit = initialState, a
             }else {
                 return  state
             }
-
-
+        case ActionType.DELETE_STATISTIC_TABLE:
+            return {...state, statisticArray: state.statisticArray.filter(el =>  el.id !== action.id)}
         default:
             return state
     }
@@ -58,6 +59,6 @@ export const addNewStatisticTable = () => {
 export const setFiler = (rowStatist: TableRowType[] | [], id:string) =>  {
     return{type:ActionType.SET_FILER_TABLE, rowStatist, id} as const
 }
-
+export const deleteStatistic = (id: string) => ({type:ActionType.DELETE_STATISTIC_TABLE, id} as const)
 
 

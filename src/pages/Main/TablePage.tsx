@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,7 +8,7 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {Box, Checkbox, CircularProgress, createMuiTheme, IconButton, TextField} from "@material-ui/core";
+import {Box, Checkbox, CircularProgress, createMuiTheme, ThemeProvider} from "@material-ui/core";
 import EnhancedTableToolbar from "./EnhancedTableToolbar ";
 import style from './TablePage.module.scss'
 import {
@@ -17,22 +17,21 @@ import {
     SortEnum,
     StatusFetchEnum,
     StatusType,
-    TableRowType, TotalType
+    TableRowType,
+    TotalType
 } from '../../store/TableReducer/TableType';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../../store/store";
 import EditableSpanText from "../../components/EditableSpanText/EditableSpanText";
 import TableHeader from "../../components/TableHeader/TableHeader";
 import TablePaginationActions from '../../components/TablePaginator/TablePaginator';
-import {currentDate, currentyTime, setYear, smartSorting} from "../../helper/helper";
+import {currentDate, setYear, smartSorting} from "../../helper/helper";
 import {editRecommendationValue, getPacksThunk, updatePack} from "../../store/TableReducer/TableReducer";
 import {Redirect} from 'react-router-dom';
 import {RoutingType} from "../../routes/Routes";
-import { ThemeProvider } from '@material-ui/core';
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import EditableStatusTotal from "../../components/EditableSpanText/EditableStatusTotal";
 import {optionsArrayStatus, optionsArrayTotal} from "../../utils/ConstOptions";
+import EditableMitingLeader from "../../components/EditableSpanText/EditableMitingLeader";
 
 
 const theme = createMuiTheme({
@@ -82,10 +81,7 @@ const TablePage = () => {
     const [order, setOrder] = React.useState<Order>(OrderEnum.ASC);
     const [orderBy, setOrderBy] = React.useState<string>('name');
     const [typeSort, setTypeSort] = React.useState<string>('string');
-    const [searchName, setSearchName] = useState<string>('')
     const [currentsearchName, setCurrentSearchName] = useState<string>('')
-    const [open, setOpen] = useState<boolean>(false)
-    const [openTotal, setOpenTotal] = useState<boolean>(false)
 
     const {
         status,
@@ -165,16 +161,18 @@ const TablePage = () => {
         }
     }
 
-    const searchHangler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setSearchName(e.currentTarget.value)
-    }
     const filteredByName = rows.filter(el => {
         return el.name.toLowerCase().includes(currentsearchName.toLowerCase())
     })
     const changeInputRecHandler = (recommendation: string, id: string) => {
-        dispatch(updatePack({recommendation, _id: id}))
-        console.log(recommendation, id)
-        dispatch(editRecommendationValue(recommendation, id))
+        if(recommendation.trim() !== '') {
+            dispatch(updatePack({recommendation, _id: id}))
+
+            dispatch(editRecommendationValue(recommendation, id))
+        } else {
+            return
+        }
+
     }
     const changeInputStatus = (value:string, _id:string) => {
         const status = value as StatusType
@@ -184,7 +182,13 @@ const TablePage = () => {
         const total = value as TotalType
         dispatch(updatePack({total, _id}))
     }
-
+    const changeMeetingCheck = (value: boolean, _id:string) => {
+        console.log(value)
+        dispatch(updatePack({meeting:value, _id}))
+    }
+    const changeLeaderCheck = (value: boolean, _id:string) => {
+        dispatch(updatePack({leaderInterview:value, _id}))
+    }
 
 
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
@@ -255,14 +259,10 @@ const TablePage = () => {
                                                         {row.phone}
                                                     </TableCell>
                                                     <TableCell style={{width: 100}} align="center">
-                                                        {row.meeting === null ? null : row.meeting ? <span>yes</span> :
-                                                            <span>No</span>}
+                                                        <EditableMitingLeader cheched={row.meeting} onChangeBoolean={changeMeetingCheck} id={row._id}/>
                                                     </TableCell>
                                                     <TableCell style={{width: 120}} align="center">
-                                                        {open? <EditableStatusTotal id={row._id} setClose={setOpen} optionsArray={optionsArrayStatus} onChanges={changeInputStatus}/> : row.status}
-                                                        <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                                                            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                                        </IconButton>
+                                                        <EditableStatusTotal id={row._id} title={row.status} optionsArray={optionsArrayStatus} onChanges={changeInputStatus}/>
                                                     </TableCell>
                                                     <TableCell style={{width: 160}} align="left">
                                                         <EditableSpanText
@@ -275,14 +275,10 @@ const TablePage = () => {
 
                                                     </TableCell>
                                                     <TableCell style={{width: 100}} align="center">
-                                                        {row.leaderInterview === null ? null : row.leaderInterview ?
-                                                            <span>yes</span> : <span>No</span>}
+                                                        <EditableMitingLeader cheched={row.leaderInterview} onChangeBoolean={changeLeaderCheck} id={row._id}/>
                                                     </TableCell>
                                                     <TableCell style={{width: 100}} align="center">
-                                                        {openTotal? <EditableStatusTotal id={row._id} setClose={setOpenTotal} optionsArray={optionsArrayTotal} onChanges={changeInputTotal}/> : row.total}
-                                                        <IconButton aria-label="expand row" size="small" onClick={() => setOpenTotal(!openTotal)}>
-                                                            {openTotal ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                                        </IconButton>
+                                                       <EditableStatusTotal id={row._id} title={row.total} optionsArray={optionsArrayTotal} onChanges={changeInputTotal}/>
                                                     </TableCell>
                                                     <TableCell style={{width: 100}} align="center">
                                                         <EditableSpanText

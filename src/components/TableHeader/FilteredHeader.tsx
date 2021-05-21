@@ -21,7 +21,7 @@ const FilteredHeader:FC<BropsType> = ({optionsArray, id}) => {
     return (
         <>
             <div className={style.close}>
-                <IconButton disabled={disabledBtn} aria-label="delete" onClick={() => setOpen(!open)}>
+                <IconButton disabled={disabledBtn} aria-label="delete" size="small" onClick={() => setOpen(!open)}>
                     <FilterListIcon fontSize={'small'}/>
                 </IconButton>
                  <span className={`${style.fileredSpan} ${id === 'status' && searchStatus !== '' ? style.fileredSpanOpen : style.fileredSpanClose}` }>!</span>
