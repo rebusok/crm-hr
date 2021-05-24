@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import s from './Layout.module.scss';
 import MenuToggle from "../menuToggle";
-import Header from "../../Header";
+import Header from "../../Header/Header";
 import Routes from "../../../routes/Routes";
 
 

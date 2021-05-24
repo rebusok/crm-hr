@@ -15,9 +15,9 @@ import Container from '@material-ui/core/Container';
 import {useFormik} from 'formik';
 import {useDispatch, useSelector} from "react-redux";
 import {setLoginT} from "../../store/AuthReducer/AuthReducer";
-import {AppRootStateType} from "../../store/store";
-import {Redirect} from "react-router-dom";
+import {NavLink, Redirect} from "react-router-dom";
 import {RoutingType} from "../../routes/Routes";
+import {isLoginSelect} from "../../utils/selectors";
 
 function Copyright() {
     return (
@@ -61,7 +61,7 @@ type FormikErrorType = {
 export default function Auth() {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const {isLogin} =  useSelector((state: AppRootStateType) => state.auth)
+    const {isLogin} =  useSelector(isLoginSelect)
 
     const formik = useFormik({
         initialValues: {
@@ -142,14 +142,15 @@ export default function Auth() {
                     </Button>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="#" variant="body2">
+                            <NavLink to={RoutingType.RES_PASSWORD} >
                                 Forgot password?
-                            </Link>
+                            </NavLink>
+
                         </Grid>
                         <Grid item>
-                            <Link href="#" variant="body2">
+                            <NavLink to={RoutingType.REGISTRATION} >
                                 {"Don't have an account? Sign Up"}
-                            </Link>
+                            </NavLink>
                         </Grid>
                     </Grid>
                 </form>

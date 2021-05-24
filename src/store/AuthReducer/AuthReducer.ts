@@ -80,9 +80,11 @@ export const setAuthMe = (): AppThunk => async (dispatch) => {
 }
 export const setRegistration = (email: string, password: string): AppThunk  => async (dispatch) => {
     dispatch(setStatusAC(StatusFetchEnum.LOADING))
+    debugger
     dispatch(setDisabledBtn(true))
     try{
-        await  ApiAuth.registration(email, password)
+         const res = await ApiAuth.registration(email, password)
+        console.log(res)
         dispatch(setErrorMes(''))
         dispatch(setStatusAC(StatusFetchEnum.OK))
     }catch (e) {

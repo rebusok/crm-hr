@@ -1,12 +1,12 @@
 import React, {FC} from 'react';
 import {Box, Button, Collapse, Typography} from "@material-ui/core";
 import Paper from '@material-ui/core/Paper';
-import {PositionEnum, PositionType, TableRowType} from "../../store/TableReducer/TableType";
-import Row from "./Row";
+import {PositionEnum, PositionType, TableRowType} from "../../../store/TableReducer/TableType";
+import Row from "../Row/Row";
 import cls from './MappedStatistic.module.scss'
 import {useDispatch} from "react-redux";
-import {deleteStatistic} from "../../store/statisticReducer/statisticReducer";
-import {currentDate} from "../../helper/helper";
+import {deleteStatistic} from "../../../store/statisticReducer/statisticReducer";
+import {currentDate} from "../../../helper/helper";
 
 
 interface PropsType {

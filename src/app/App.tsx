@@ -16,14 +16,12 @@ function App() {
         stableDispatch(setAuthMe())
     }, [stableDispatch])
 
-    if(!isInitial) {
-        return <CircularProgress />
+    if (!isInitial) {
+        return <CircularProgress/>
     }
     return (
         <>
             <Layout/>
-            {/*<Auth/>*/}
-            {/*<TestTable/>*/}
         </>
 
     );

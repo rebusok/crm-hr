@@ -1,12 +1,12 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Button} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
-import {setFiler} from "../../store/statisticReducer/statisticReducer";
-import MappedStatistic from "./MappedStatistic";
-import {getPacksThunk} from "../../store/TableReducer/TableReducer";
-import {AppRootStateType} from "../../store/store";
-import {TableRowType} from "../../store/TableReducer/TableType";
-import {getRowArray} from "../../utils/selectors";
+import {setFiler} from "../../../store/statisticReducer/statisticReducer";
+import MappedStatistic from "../MappedStatistic/MappedStatistic";
+import {getPacksThunk} from "../../../store/TableReducer/TableReducer";
+import {AppRootStateType} from "../../../store/store";
+import {TableRowType} from "../../../store/TableReducer/TableType";
+import {getRowArray} from "../../../utils/selectors";
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import cls from './StatisticOneTable.module.scss'

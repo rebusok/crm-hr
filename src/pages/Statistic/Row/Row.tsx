@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react';
 import {Button, Collapse, IconButton, Paper, TextField} from "@material-ui/core";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import {PositionType, TableRowType} from "../../store/TableReducer/TableType";
+import {PositionType, TableRowType} from "../../../store/TableReducer/TableType";
 import cls from './Row.module.scss'
 
 

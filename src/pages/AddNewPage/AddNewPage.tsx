@@ -10,11 +10,15 @@ import {FormGroup} from '@material-ui/core';
 import cls from './AddNewPage.module.scss'
 import {AppRootStateType} from "../../store/store";
 import SnackbarRoot from "../../components/SnackbarRoot/SnackbarRoot";
+import {isLoginSelect} from "../../utils/selectors";
+import {Redirect} from "react-router-dom";
+import {RoutingType} from "../../routes/Routes";
 
 
 const AddNewPage = () => {
     const dispatch = useDispatch();
     const {status} = useSelector((state:AppRootStateType) => state.auth)
+    const {isLogin}= useSelector(isLoginSelect)
     const [first, setFist] = useState<boolean>(true)
     const [open, setOpen] = useState(false);
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
@@ -66,6 +70,9 @@ const AddNewPage = () => {
         },
 
     });
+    if (!isLogin) {
+        return <Redirect to={RoutingType.LOGIN}/>
+    }
     return (
         <div className={cls.container}>
 
