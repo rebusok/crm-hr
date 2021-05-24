@@ -13,6 +13,7 @@ const axiosInstance = axios.create(configOMB);
 
 export const ApiAuth = {
     login(email: string, password: string, rememberMe: boolean) {
+
         return axiosInstance.post('auth/login', {email,password, rememberMe})
     },
     registration(email:string, password: string) {
